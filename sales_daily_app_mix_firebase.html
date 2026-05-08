@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>ยอดขายสะสม</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef2ee;--card:#fff;--bd:rgba(0,0,0,0.09);
+  --tx:#1a1a1a;--tx2:#5a6672;--tx3:#9aa3a8;
+  --gr:#1a5c3a;--gr2:#2d8653;--grl:#e6f3ec;
+  --rd:#c0392b;--rdl:#fdf0ef;
+  --am:#d4750b;--aml:#fef6e8;
+  --dk:#132d1f;--dk2:#1e3d2a;--dk3:#243d2f;
+  --ac:#34d27a;--ac2:#7ec8a0;--ac3:#a8dfc0;
+  --r:12px;--rs:8px;
+}
+/* Unified dark card style */
+.dark-card{background:var(--dk2);border-radius:14px;padding:14px;margin-bottom:10px;border:.5px solid rgba(52,210,122,0.12);}
+.dark-card-title{color:var(--ac2);font-size:12px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);max-width:430px;margin:0 auto;min-height:100vh;font-size:14px}
+.hdr{background:linear-gradient(135deg,var(--dk) 0%,var(--gr) 100%);color:#fff;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:.5px solid rgba(52,210,122,0.2)}
+.hdr h1{font-size:15px;font-weight:600;line-height:1.3}
+.hdr .sub{font-size:11px;opacity:.75}
+.tabs{display:flex;background:#fff;border-bottom:1px solid var(--bd);position:sticky;top:52px;z-index:99}
+.tab{flex:1;padding:10px 6px;text-align:center;font-size:12px;font-weight:500;color:var(--tx2);cursor:pointer;border-bottom:2.5px solid transparent;user-select:none}
+.tab.on{color:var(--gr);border-bottom-color:var(--ac)}
+.pg{display:none;padding:13px 13px 90px}
+.pg.on{display:block}
+.sec{font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin:16px 0 7px}
+.sec:first-child{margin-top:2px}
+.card{background:var(--card);border-radius:var(--r);border:.5px solid var(--bd);padding:13px;margin-bottom:10px}
+label{display:block;font-size:11px;color:var(--tx2);margin-bottom:3px;font-weight:500}
+select,input[type=text],input[type=number],input[type=date]{
+  width:100%;padding:9px 11px;border:1px solid #ccc;border-radius:var(--rs);
+  font-size:13px;font-family:inherit;color:var(--tx);background:#f9f9f9;
+  -webkit-appearance:none;appearance:none
+}
+select:focus,input:focus{outline:2px solid var(--gr2);outline-offset:1px;background:#fff}
+.fr{margin-bottom:9px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bg{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.bi label{font-size:10px;margin-bottom:2px}
+.bi input{padding:7px 8px;font-size:12px;text-align:right}
+.btn{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;padding:12px;border:none;border-radius:var(--rs);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn:active{opacity:.85}
+.btn-p{background:var(--gr);color:#fff}
+.btn-ex{background:#145228;color:#fff;margin-bottom:8px}
+.mg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.mc{background:#fff;border-radius:var(--rs);border:.5px solid var(--bd);padding:10px}
+.mc.full{grid-column:1/-1}
+.ml{font-size:10px;color:var(--tx3);margin-bottom:3px}
+.mv{font-size:18px;font-weight:700;line-height:1.2}
+.mv.g{color:var(--gr2)}.mv.r{color:var(--rd)}.mv.a{color:var(--am)}
+.ms{font-size:10px;color:var(--tx3);margin-top:2px}
+.pb{background:var(--bg);border-radius:5px;height:6px;margin-top:6px;overflow:hidden}
+.pf{height:100%;border-radius:5px;background:var(--gr2)}
+.pf.ov{background:var(--rd)}
+.bdg{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
+.bg-g{background:var(--grl);color:var(--gr)}.bg-r{background:var(--rdl);color:var(--rd)}.bg-a{background:var(--aml);color:var(--am)}
+.cw{position:relative;width:100%;height:190px}
+.cw.t{height:220px}
+.rr{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:.5px solid var(--bd)}
+.rr:last-child{border:none}
+.rn{width:21px;height:21px;border-radius:50%;background:var(--bg);font-size:10px;font-weight:700;color:var(--tx2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rn.gd{background:#fef3cd;color:#b7830a}
+.rb{flex:1;min-width:0}
+.rl{font-size:12px;font-weight:500}
+.rbg{background:var(--bg);border-radius:3px;height:4px;margin-top:3px}
+.rbf{height:4px;border-radius:3px}
+.rv{font-size:11px;font-weight:600;text-align:right;white-space:nowrap}
+.rv small{display:block;font-size:10px;color:var(--tx3);font-weight:400}
+.ei{display:flex;align-items:center;gap:9px;padding:9px;background:#fff;border-radius:var(--rs);border:.5px solid var(--bd);margin-bottom:6px}
+.eic{width:36px;height:36px;border-radius:8px;background:var(--grl);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ein{flex:1;min-width:0}
+.enn{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.enm{font-size:10px;color:var(--tx3);margin-top:1px}
+.ea{text-align:right;flex-shrink:0}
+.ea .m{font-size:11px;font-weight:700;color:var(--gr)}
+.ea .t{font-size:10px;color:var(--tx3)}
+.edel{background:none;border:none;color:#bbb;cursor:pointer;font-size:18px;padding:3px;flex-shrink:0}
+.dv{height:.5px;background:var(--bd);margin:10px 0}
+.sr{display:flex;justify-content:space-between;padding:4px 0;font-size:12px}
+.sr.tot{font-weight:700;border-top:1px solid var(--bd);margin-top:4px;padding-top:8px;font-size:13px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(70px);background:#111;color:#fff;padding:8px 16px;border-radius:20px;font-size:12px;transition:.3s;z-index:9999;white-space:nowrap;pointer-events:none}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.lbl-row{display:flex;gap:12px;font-size:11px;color:var(--tx2);margin-bottom:7px}
+.lbl-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.brow{display:grid;grid-template-columns:1fr 26px 52px 42px 38px 52px 46px;gap:0;padding:10px 12px;border-bottom:.5px solid rgba(255,255,255,0.06);cursor:pointer;transition:background .15s}
+.brow:last-child{border-bottom:none}
+.brow:active{background:rgba(255,255,255,0.05)}
+.brow .bn{color:#fff;font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brow .bpc{color:#6ee7b7;font-size:12px;font-weight:600;text-align:center}
+.brow .bv{color:#e2e8f0;font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.brow .btg{color:#64748b;font-size:11px;text-align:right;font-variant-numeric:tabular-nums}
+.brow .bpct{font-size:12px;font-weight:700;text-align:right}
+.bpct.hi{color:#4ade80}.bpct.md{color:#fbbf24}.bpct.lo{color:#f87171}
+.mcard{background:var(--bg);border-radius:var(--rs);padding:11px;margin-bottom:8px}
+.mrow{display:flex;justify-content:space-between;padding:4px 0;font-size:12px;border-bottom:.5px solid var(--bd)}
+.mrow:last-child{border:none}
+.mrow .mk{color:var(--tx3)}.mrow .mv2{font-weight:600;color:var(--tx)}</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div><h1 id="htitle">📊 ยอดขายสะสม</h1><div class="sub" id="hdate"></div></div>
+  <div id="htot" style="text-align:right;font-size:11px;opacity:.9;line-height:1.5"></div>
+</div>
+
+<div class="tabs">
+  <div class="tab on" id="te" onclick="go('e')">📝 กรอก</div>
+  <div class="tab" id="td" onclick="go('d')">📊 แดชบอร์ด</div>
+  <div class="tab" id="tt" onclick="go('t')">📋 รายสาขา</div>
+</div>
+
+<!-- ===== ENTRY PAGE ===== -->
+<div id="pe" class="pg on">
+
+  <div class="card">
+    <div class="sec">🏪 เลือกห้าง</div>
+
+    <div class="fr">
+      <select id="sc" onchange="onCC()" style="margin-top:0">
+        <option value="">-- เลือกห้าง --</option>
+        <option value="Homepro">Homepro</option>
+        <option value="Thai Watsadu">Thai Watsadu</option>
+        <option value="Global House">Global House</option>
+        <option value="Megahome">Megahome</option>
+        <option value="DoHome">DoHome</option>
+        <option value="DoHome Togo">DoHome Togo</option>
+        <option value="HomeHub">HomeHub</option>
+        <option value="บุญถาวร">บุญถาวร</option>
+        <option value="ฮาร์ดแวร์เฮ้าส์">ฮาร์ดแวร์เฮ้าส์</option>
+        <option value="โฮมบุญ">โฮมบุญ</option>
+        <option value="โฮมเพ้นท์">โฮมเพ้นท์</option>
+        <option value="ศิริมหาชัย">ศิริมหาชัย</option>
+        <option value="Homeshop">Homeshop</option>
+      </select>
+    </div>
+
+    <div class="fr">
+      <label>สาขา</label>
+      <select id="sb" onchange="onBranchChange()">
+        <option value="">-- เลือกสาขา (เลือกห้างก่อน) --</option>
+      </select>
+    </div>
+
+    <!-- Auto-filled branch info -->
+    <div id="branch-info" style="display:none;background:var(--grl);border-radius:var(--rs);padding:10px;margin-top:4px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:12px">
+        <div><span style="color:var(--tx3);font-size:10px">เป้าการขาย</span><div style="font-weight:700;color:var(--gr);font-size:14px" id="bi-target">-</div></div>
+        <div><span style="color:var(--tx3);font-size:10px">PC Sup</span><div style="font-weight:600" id="bi-pc">-</div></div>
+        <div><span style="color:var(--tx3);font-size:10px">ภูมิภาค</span><div style="font-weight:600" id="bi-region">-</div></div>
+        <div><span style="color:var(--tx3);font-size:10px">จังหวัด</span><div style="font-weight:600" id="bi-province">-</div></div>
+      </div>
+    </div>
+
+    <div class="fr" style="margin-top:10px">
+      <label>วันที่</label>
+      <input type="date" id="idate" oninput="updateTitle();onBranchChange();">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec">👤 ข้อมูล PC</div>
+    <div class="g2">
+      <div class="fr">
+        <label>จำนวน PC (คน)</label>
+        <input type="number" id="ipc" placeholder="0" min="0" style="text-align:center">
+      </div>
+      <div class="fr">
+        <label>PC Promotion (คน)</label>
+        <input type="number" id="ipcpromo" placeholder="0" min="0" style="text-align:center">
+      </div>
+    </div>
+    <div id="pc-autofill-hint" style="display:none;align-items:center;gap:8px;background:var(--grl);border-radius:var(--rs);padding:7px 10px;margin-top:2px"></div>
+  </div>
+
+  <div class="card">
+    <div class="sec">🎨 ยอดขายแยกแบรนด์ (บาท)</div>
+    <div class="bg" id="bi">
+      <div class="bi"><label>Beger</label><input type="text" inputmode="numeric" autocomplete="off" id="bBeger" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Toa</label><input type="text" inputmode="numeric" autocomplete="off" id="bToa" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>ICI</label><input type="text" inputmode="numeric" autocomplete="off" id="bICI" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Jotun</label><input type="text" inputmode="numeric" autocomplete="off" id="bJotun" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Captain</label><input type="text" inputmode="numeric" autocomplete="off" id="bCaptain" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Nippon</label><input type="text" inputmode="numeric" autocomplete="off" id="bNippon" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>RTB</label><input type="text" inputmode="numeric" autocomplete="off" id="bRTB" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Delta</label><input type="text" inputmode="numeric" autocomplete="off" id="bDelta" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Turbo</label><input type="text" inputmode="numeric" autocomplete="off" id="bTurbo" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Pammastic</label><input type="text" inputmode="numeric" autocomplete="off" id="bPammastic" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>JBP</label><input type="text" inputmode="numeric" autocomplete="off" id="bJBP" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Sunke</label><input type="text" inputmode="numeric" autocomplete="off" id="bSunke" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Woodtect</label><input type="text" inputmode="numeric" autocomplete="off" id="bWoodtect" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Iloft</label><input type="text" inputmode="numeric" autocomplete="off" id="bIloft" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Loft8</label><input type="text" inputmode="numeric" autocomplete="off" id="bLoft8" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>TPI</label><input type="text" inputmode="numeric" autocomplete="off" id="bTPI" placeholder="0" oninput="fmtInput(this)"></div>
+      <div class="bi"><label>Worldpaint</label><input type="text" inputmode="numeric" autocomplete="off" id="bWorldpaint" placeholder="0" oninput="fmtInput(this)"></div>
+    </div>
+    <div class="dv"></div>
+    <div class="sr tot"><span>รวมทั้งหมด</span><span id="tprev" style="color:var(--gr2)">฿ 0</span></div>
+  </div>
+
+  <div class="card">
+    <button class="btn btn-p" onclick="saveE()">✓ บันทึกยอดขาย</button>
+  </div>
+
+</div>
+
+<!-- ===== DASHBOARD PAGE ===== -->
+<div id="pd" class="pg">
+
+  <div class="sec">🔍 กรองข้อมูล</div>
+  <div class="card" style="padding:11px">
+    <div class="g2" style="margin-bottom:7px">
+      <div>
+        <label>เดือน</label>
+        <select id="fm" onchange="rd()">
+          <option value="">ทั้งหมด</option>
+          <option value="0">มกราคม</option><option value="1">กุมภาพันธ์</option>
+          <option value="2">มีนาคม</option><option value="3">เมษายน</option>
+          <option value="4">พฤษภาคม</option><option value="5">มิถุนายน</option>
+          <option value="6">กรกฎาคม</option><option value="7">สิงหาคม</option>
+          <option value="8">กันยายน</option><option value="9">ตุลาคม</option>
+          <option value="10">พฤศจิกายน</option><option value="11">ธันวาคม</option>
+        </select>
+      </div>
+      <div>
+        <label>เชน</label>
+        <select id="fc" onchange="onDCC()">
+          <option value="">ทั้งหมด</option>
+          <option value="Homepro">Homepro</option>
+          <option value="Thai Watsadu">Thai Watsadu</option>
+          <option value="Global House">Global House</option>
+          <option value="Megahome">Megahome</option>
+          <option value="DoHome">DoHome</option>
+          <option value="DoHome Togo">DoHome Togo</option>
+          <option value="HomeHub">HomeHub</option>
+          <option value="บุญถาวร">บุญถาวร</option>
+          <option value="ฮาร์ดแวร์เฮ้าส์">ฮาร์ดแวร์เฮ้าส์</option>
+          <option value="โฮมบุญ">โฮมบุญ</option>
+          <option value="โฮมเพ้นท์">โฮมเพ้นท์</option>
+          <option value="ศิริมหาชัย">ศิริมหาชัย</option>
+          <option value="Homeshop">Homeshop</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:7px"><label>สาขา</label><select id="fbr" onchange="rd()"><option value="">ทั้งหมด</option></select></div>
+    <div style="margin-top:7px"><label>PC Sup</label><select id="fps" onchange="rd()"><option value="">ทั้งหมด</option></select></div>
+  </div>
+
+  <div class="sec">📈 สรุปยอดขาย</div>
+  <div class="mg">
+    <div class="mc"><div class="ml">ยอด Beger</div><div class="mv g" id="k1">฿0</div></div>
+    <div class="mc"><div class="ml">เป้าหมาย</div><div class="mv" id="k2">฿0</div></div>
+    <div class="mc"><div class="ml">ทำได้ vs เป้า</div><div class="mv" id="k3">0%</div><div class="pb"><div class="pf" id="kb" style="width:0%"></div></div></div>
+    <div class="mc"><div class="ml">เฉลี่ย/วัน</div><div class="mv a" id="k4">฿0</div></div>
+    <div class="mc full">
+      <div class="ml">คาดการณ์สิ้นเดือน</div>
+      <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">
+        <div class="mv" id="k5" style="font-size:15px">฿0</div>
+        <div class="mv g" id="k5pct" style="font-size:18px">0%</div>
+      </div>
+      <div class="pb" style="margin-top:6px"><div class="pf" id="k5bar" style="width:0%"></div></div>
+      <div class="ms" id="k5s"></div>
+    </div>
+  </div>
+
+  <div class="sec">🥧 ส่วนแบ่งการตลาด</div>
+  <div class="dark-card">
+    <div class="dark-card-title">🥧 ส่วนแบ่งการตลาด</div>
+    <!-- Donut chart + table side by side -->
+    <div style="display:flex;gap:12px;align-items:flex-start">
+      <div style="flex-shrink:0;width:140px;height:140px;position:relative">
+        <canvas id="cdonut"></canvas>
+        <div id="donut-center" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none">
+          <div style="font-size:9px;color:var(--ac3)">Beger</div>
+          <div id="donut-pct" style="font-size:18px;font-weight:700;color:var(--ac);line-height:1.1">-</div>
+          <div style="font-size:8px;color:var(--ac3)">MS%</div>
+        </div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="display:grid;grid-template-columns:18px 1fr 52px;align-items:center;gap:0;margin-bottom:6px;padding:0 2px">
+          <div style="color:rgba(255,255,255,0.25);font-size:10px;font-weight:600">#</div>
+          <div style="color:rgba(255,255,255,0.25);font-size:10px;font-weight:600">แบรนด์</div>
+          <div style="color:rgba(255,255,255,0.25);font-size:10px;font-weight:600;text-align:right">MS%</div>
+        </div>
+        <div id="ms-table"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">📅 วิเคราะห์ช่วง 10 วัน</div>
+  <div class="card" style="padding:11px">
+    <div style="position:relative;width:100%;height:130px"><canvas id="cp"></canvas></div>
+    <div id="p-best" style="text-align:center;margin-top:8px;font-size:11px;color:var(--tx2)"></div>
+  </div>
+
+  <div class="sec">📈 แนวโน้มยอดสะสมรายวัน</div>
+  <div class="dark-card">
+    <div class="dark-card-title">📈 แนวโน้มยอดสะสมรายวัน
+      <span style="margin-left:auto;display:flex;gap:10px;font-size:10px;font-weight:500">
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:16px;height:2.5px;background:var(--ac);display:inline-block;border-radius:2px"></span>ยอดสะสม</span>
+        <span style="display:flex;align-items:center;gap:4px"><span style="width:16px;height:2px;background:rgba(255,255,255,0.3);display:inline-block;border-radius:2px"></span>เป้าสะสม</span>
+      </span>
+    </div>
+    <div style="position:relative;width:100%;height:210px"><canvas id="ctr"></canvas></div>
+  </div>
+
+  <div class="sec">📆 วิเคราะห์รายวัน จ–อา</div>
+  <div class="card" style="padding:11px">
+    <div class="cw"><canvas id="cw2"></canvas></div>
+  </div>
+
+  <div class="sec">🏪 ยอดขาย Beger เทียบเป้าหมาย รายห้าง</div>
+  <div class="dark-card" style="padding:12px 14px">
+    <div id="chain-summary"></div>
+  </div>
+
+  <div class="sec">💾 Export</div>
+  <button class="btn btn-ex" onclick="doExport()">⬇ Export Excel (.xlsx)</button>
+</div>
+
+<!-- ===== SAVE CONFIRM MODAL ===== -->
+<div id="save-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.55);backdrop-filter:blur(3px);align-items:flex-end;justify-content:center">
+  <div style="background:var(--dk2);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px 18px 28px;border-top:.5px solid rgba(52,210,122,0.2);max-height:90vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="color:#fff;font-size:16px;font-weight:700">📋 สรุปก่อนบันทึก</div>
+      <button onclick="closeSaveModal()" style="background:rgba(255,255,255,0.08);border:none;color:#aaa;font-size:18px;width:30px;height:30px;border-radius:50%;cursor:pointer;line-height:1">×</button>
+    </div>
+
+    <!-- Branch info strip -->
+    <div id="sm-branch" style="background:rgba(52,210,122,0.1);border-radius:10px;padding:12px 14px;margin-bottom:12px;border:.5px solid rgba(52,210,122,0.2)"></div>
+
+    <!-- 4 KPI cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">
+      <div style="background:var(--dk3);border-radius:10px;padding:10px;text-align:center">
+        <div style="color:var(--ac3);font-size:9px;margin-bottom:4px" id="sm-today-label">ยอดสะสม</div>
+        <div id="sm-today" style="color:var(--ac);font-size:15px;font-weight:700">-</div>
+      </div>
+      <div style="background:var(--dk3);border-radius:10px;padding:10px;text-align:center">
+        <div style="color:var(--ac3);font-size:9px;margin-bottom:4px">ACH% ปัจจุบัน</div>
+        <div id="sm-pct" style="font-size:15px;font-weight:700">-</div>
+      </div>
+      <div style="background:var(--dk3);border-radius:10px;padding:10px;text-align:center">
+        <div style="color:var(--ac3);font-size:9px;margin-bottom:4px">คาดการณ์ยอด สิ้นเดือน</div>
+        <div id="sm-forecast" style="color:#f5a623;font-size:15px;font-weight:700">-</div>
+      </div>
+      <div style="background:var(--dk3);border-radius:10px;padding:10px;text-align:center">
+        <div style="color:var(--ac3);font-size:9px;margin-bottom:4px">คาดการณ์ ACH% สิ้นเดือน</div>
+        <div id="sm-ach-forecast" style="font-size:15px;font-weight:700">-</div>
+      </div>
+    </div>
+
+    <!-- MS bar -->
+    <div style="background:var(--dk3);border-radius:10px;padding:12px 14px;margin-bottom:16px">
+      <div style="color:var(--ac3);font-size:10px;font-weight:600;margin-bottom:8px">🥧 Market Share (รายสาขา วันนี้)</div>
+      <div id="sm-ms"></div>
+    </div>
+
+    <!-- Brand breakdown -->
+    <div style="background:var(--dk3);border-radius:10px;padding:12px 14px;margin-bottom:16px">
+      <div style="color:var(--ac3);font-size:10px;font-weight:600;margin-bottom:8px">🎨 ยอดขายแยกแบรนด์</div>
+      <div id="sm-brands"></div>
+    </div>
+
+    <!-- Alert banner -->
+    <div id="sm-alert" style="display:none;border-radius:12px;padding:12px 14px;margin-bottom:12px;text-align:center"></div>
+
+    <!-- Buttons -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button onclick="closeSaveModal()" style="padding:14px;border-radius:12px;border:.5px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#aaa;font-size:14px;font-weight:600;cursor:pointer">← แก้ไข</button>
+      <button onclick="confirmSave()" style="padding:14px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--gr2),var(--ac));color:#fff;font-size:14px;font-weight:700;cursor:pointer">✓ ยืนยันบันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confetti canvas -->
+<canvas id="confetti-canvas" style="display:none;position:fixed;inset:0;z-index:1000;pointer-events:none;width:100%;height:100%"></canvas>
+
+<!-- ===== BRANCH TABLE PAGE ===== -->
+<div id="pt" class="pg">
+
+  <div class="sec" style="margin-top:4px">🔍 กรองข้อมูล</div>
+  <div class="card" style="padding:10px">
+    <div class="g2" style="margin-bottom:7px">
+      <div>
+        <label>เดือน</label>
+        <select id="tm" onchange="rt()">
+          <option value="">ทั้งหมด</option>
+          <option value="0">มกราคม</option><option value="1">กุมภาพันธ์</option>
+          <option value="2">มีนาคม</option><option value="3">เมษายน</option>
+          <option value="4">พฤษภาคม</option><option value="5">มิถุนายน</option>
+          <option value="6">กรกฎาคม</option><option value="7">สิงหาคม</option>
+          <option value="8">กันยายน</option><option value="9">ตุลาคม</option>
+          <option value="10">พฤศจิกายน</option><option value="11">ธันวาคม</option>
+        </select>
+      </div>
+      <div>
+        <label>PC Sup</label>
+        <select id="tps" onchange="rt()"><option value="">ทั้งหมด</option></select>
+      </div>
+    </div>
+    <div>
+      <label>เชน</label>
+      <select id="tc" onchange="rt()">
+        <option value="">ทั้งหมด</option>
+        <option value="Homepro">Homepro</option>
+        <option value="Thai Watsadu">Thai Watsadu</option>
+        <option value="Global House">Global House</option>
+        <option value="Megahome">Megahome</option>
+        <option value="DoHome">DoHome</option>
+        <option value="DoHome Togo">DoHome Togo</option>
+        <option value="HomeHub">HomeHub</option>
+        <option value="บุญถาวร">บุญถาวร</option>
+        <option value="ฮาร์ดแวร์เฮ้าส์">ฮาร์ดแวร์เฮ้าส์</option>
+        <option value="โฮมบุญ">โฮมบุญ</option>
+        <option value="โฮมเพ้นท์">โฮมเพ้นท์</option>
+        <option value="ศิริมหาชัย">ศิริมหาชัย</option>
+        <option value="Homeshop">Homeshop</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Summary strip -->
+  <div id="tsum" style="display:flex;gap:8px;margin-bottom:10px;overflow-x:auto;padding-bottom:2px"></div>
+
+  <!-- Table header -->
+  <div style="background:linear-gradient(135deg,var(--dk) 0%,var(--gr) 100%);border-radius:10px 10px 0 0;padding:10px 12px;display:flex;align-items:center">
+    <div style="color:#fff;font-size:12px;font-weight:700;flex:1">ตารางข้อมูลรายสาขา</div>
+    <button onclick="doExport()" style="background:#2d8653;color:#fff;border:none;border-radius:20px;padding:5px 13px;font-size:11px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px">
+      📥 Export
+    </button>
+  </div>
+
+  <!-- Column headers -->
+  <div style="background:var(--dk2);display:grid;grid-template-columns:1fr 26px 52px 42px 38px 52px 46px;gap:0;padding:7px 12px">
+    <div style="color:#aaa;font-size:10px;font-weight:600">สาขา</div>
+    <div style="color:#aaa;font-size:10px;font-weight:600;text-align:center">PC</div>
+    <div style="color:#aaa;font-size:10px;font-weight:600;text-align:right">ยอด</div>
+    <div style="color:#aaa;font-size:10px;font-weight:600;text-align:right">ACH%</div>
+    <div style="color:#7ec8a0;font-size:10px;font-weight:600;text-align:right">MS%</div>
+    <div style="color:#fbbf24;font-size:10px;font-weight:600;text-align:right">คาดยอด</div>
+    <div style="color:#fbbf24;font-size:10px;font-weight:600;text-align:right">คาด%</div>
+  </div>
+
+  <div id="btable" style="background:var(--dk3);border-radius:0 0 10px 10px;margin-bottom:12px"></div>
+
+  <!-- Branch detail modal overlay -->
+  <div id="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:flex-end;justify-content:center" onclick="closeModal(event)">
+    <div id="modal-box" style="background:#fff;border-radius:16px 16px 0 0;width:100%;max-width:430px;max-height:85vh;overflow-y:auto;padding:20px 16px 40px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-size:15px;font-weight:700" id="modal-title">-</div>
+        <button onclick="closeModal()" style="background:var(--bg);border:none;border-radius:50%;width:30px;height:30px;font-size:18px;cursor:pointer;color:var(--tx2)">×</button>
+      </div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <div style="height:30px"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Data ──────────────────────────────────────────────
+const BRANDS=['Beger','Toa','ICI','Jotun','Captain','Nippon','RTB','Delta','Turbo','Pammastic','JBP','Sunke','Woodtect','Iloft','Loft8','TPI','Worldpaint'];
+const COLS=['#34d27a','#2d8653','#7ec8a0','#a8dfc0','#f5a623','#e67e22','#d4750b','#5eadd4','#2980b9','#9b8fd4','#8e44ad','#5dc8b5','#16a085','#e8845c','#c0392b','#bec3c7','#7f8c8d'];
+const DOW=['จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์','อาทิตย์'];
+
+// Branch master — {code: [name, province, target, pcSup, region]}
+const BRANCHES={
+  'Homepro':{
+    '1103435':['HP รัชดาภิเษก','กรุงเทพมหานคร',400000,400000,400000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1103448':['HP เพลินจิต','กรุงเทพมหานคร',150000,150000,150000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1103523':['HP ภูเก็ต','ภูเก็ต',410000,410000,410000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1103541':['HP เชียงใหม่','เชียงใหม่',150000,150000,150000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1103453':['HP รามคำแหง','กรุงเทพมหานคร',200000,200000,200000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1103450':['HP พระราม 2','กรุงเทพมหานคร',420000,420000,420000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1103488':['HP ประชาชื่น','นนทบุรี',720000,720000,720000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1103434':['HP ลาดพร้าว','กรุงเทพมหานคร',550000,550000,550000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1103447':['HP เอกมัย-รามอินทรา','กรุงเทพมหานคร',1100000,1100000,1100000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1103539':['HP พัทยา','ชลบุรี',160000,160000,160000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1103511':['HP แจ้งวัฒนะ','กรุงเทพมหานคร',150000,170000,170000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1103548':['HP หาดใหญ่','สงขลา',200000,200000,200000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1103451':['HP เพชรเกษม','กรุงเทพมหานคร',430000,430000,430000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1103487':['HP ราชพฤกษ์','นนทบุรี',400000,400000,400000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1103547':['HP หัวหิน','ประจวบคีรีขันธ์',280000,270000,270000,'คุณแทน กฤษดา','ภาคตะวันตก'],
+    '1103524':['HP สุวรรณภูมิ','สมุทรปราการ',100000,100000,100000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1103483':['HP สมุย','สุราษฎร์ธานี',1550000,1550000,1550000,'คุณตะวัน ทานตะวัน','ภาคใต้'],
+    '1103549':['HP พิษณุโลก','พิษณุโลก',300000,300000,300000,'คุณญาญ่า ณัฐภาสรณ์','ภาคกลาง'],
+    '1103545':['HP ชลบุรี','ชลบุรี',140000,140000,140000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1103521':['HP หางดง','เชียงใหม่',540000,540000,540000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1103498':['HP อยุธยา','พระนครศรีอยุธยา',200000,200000,200000,'คุณโก๋ ทวีโชค','ภาคกลาง'],
+    '1103454':['HP กระบี่','กระบี่',600000,600000,600000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1103462':['HP ภูเก็ต (ท่าฉลอง)','ภูเก็ต',420000,420000,420000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1103537':['HP เขาใหญ่','นครราชสีมา',300000,300000,300000,'คุณกระปุก กัฌปนาทมณี','ภาคตะวันออกเฉียงเหนือ'],
+    '1103546':['HP นครปฐม','นครปฐม',200000,200000,200000,'คุณโก๋ ทวีโชค','ภาคกลาง'],
+    '1103481':['HP นครราชสีมา','นครราชสีมา',600000,640000,650000,'คุณกระปุก กัฌปนาทมณี','ภาคตะวันออกเฉียงเหนือ'],
+    '1103444':['HP สุขาภิบาล 3','กรุงเทพมหานคร',220000,220000,220000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1103482':['HP นครศรีธรรมราช','นครศรีธรรมราช',590000,590000,590000,'คุณเอ็ม ก้องเกียรติ','ภาคใต้'],
+    '1103542':['HP ฉะเชิงเทรา','ฉะเชิงเทรา',320000,320000,320000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1103464':['HP ร้อยเอ็ด','ร้อยเอ็ด',200000,200000,200000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103522':['HP สุพรรณบุรี','สุพรรณบุรี',350000,350000,350000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1103469':['HP ลพบุรี','ลพบุรี',290000,290000,290000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1103472':['HP สกลนคร','สกลนคร',180000,180000,180000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103500':['HP ตรัง','ตรัง',550000,550000,550000,'คุณเอ็ม ก้องเกียรติ','ภาคใต้'],
+    '1103485':['HP เมกะบางนา','สมุทรปราการ',100000,100000,100000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1103550':['HP บุรีรัมย์','บุรีรัมย์',250000,250000,250000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1103459':['HP หาดใหญ่ (กาญจนวนิช)','สงขลา',450000,450000,450000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1103495':['HP นครสวรรค์','นครสวรรค์',250000,250000,250000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1103466':['HP มหาชัย','สมุทรสาคร',150000,150000,150000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1103461':['HP อุบลราชธานี','อุบลราชธานี',200000,200000,200000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103460':['HP ราชบุรี','ราชบุรี',420000,420000,420000,'คุณโก๋ ทวีโชค','ภาคตะวันตก'],
+    '1103514':['HP จันทบุรี','จันทบุรี',980000,980000,980000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1103526':['HP ชุมพร','ชุมพร',500000,500000,500000,'คุณตะวัน ทานตะวัน','ภาคใต้'],
+    '1103490':['HP ปราจีนบุรี','ปราจีนบุรี',380000,380000,380000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1103527':['HP สุราษฏร์ธานี','สุราษฎร์ธานี',1080000,1080000,1080000,'คุณตะวัน ทานตะวัน','ภาคใต้'],
+    '1103467':['HP กาญจบุรี','กาญจนบุรี',161000,161000,161000,'คุณโก๋ ทวีโชค','ภาคตะวันตก'],
+    '1103512':['HP แพร่','แพร่',200000,200000,200000,'คุณญาญ่า ณัฐภาสรณ์','ภาคเหนือ'],
+    '1103489':['HP พุทธมณฑลสาย 5','นครปฐม',250000,250000,250000,'คุณโก๋ ทวีโชค','ภาคกลาง'],
+    '1103465':['HP สระบุรี','สระบุรี',120000,120000,120000,'คุณกระปุก กัฌปนาทมณี','ภาคกลาง'],
+    '1103463':['HP เพชรบูรณ์','เพชรบูรณ์',140000,140000,140000,'คุณบิว อภิมน','ภาคกลาง'],
+    '1103536':['HP ชัยภูมิ','ชัยภูมิ',100000,100000,100000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1103477':['HP เลย','เลย',300000,300000,300000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103513':['HP ลำปาง','ลำปาง',150000,150000,150000,'คุณญาญ่า ณัฐภาสรณ์','ภาคเหนือ'],
+    '1103507':['HP ประจวบคีรีขันธ์','ประจวบคีรีขันธ์',120000,120000,120000,'คุณแทน กฤษดา','ภาคตะวันตก'],
+    '1103473':['HP สุรินทร์','สุรินทร์',250000,250000,250000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1103529':['HP เชียงใหม่ สันทราย','เชียงใหม่',380000,380000,380000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1103533':['HP ศรีราชา','ชลบุรี',520000,520000,520000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1103528':['HP ภูเก็ต (ถลาง)','ภูเก็ต',190000,190000,190000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1103474':['HP พัทยาเหนือ','ชลบุรี',550000,550000,550000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1103499':['HP สุโขทัย','สุโขทัย',140000,140000,140000,'คุณญาญ่า ณัฐภาสรณ์','ภาคกลาง'],
+    '1103486':['HP สมุทรสงคราม','สมุทรสงคราม',120000,120000,120000,'คุณแทน กฤษดา','ภาคกลาง'],
+    '1103502':['HP เพชรบุรี','เพชรบุรี',160000,150000,160000,'คุณแทน กฤษดา','ภาคตะวันตก'],
+    '1103455':['HP พัทลุง','พัทลุง',200000,200000,200000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1103476':['HP อมตะ','ชลบุรี',320000,320000,300000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1103492':['HP ชัยพฤกษ์','นนทบุรี',200000,215000,215000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1103439':['HP พระราม3','กรุงเทพมหานคร',420000,420000,420000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1103475':['HP บางเสร่','ชลบุรี',230000,230000,230000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1103449':['HP พระราม9','กรุงเทพมหานคร',800000,800000,800000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1103496':['HP ศรีนครินทร์','สมุทรปราการ',100000,100000,100000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1103441':['HP กัลปพฤกษ์','กรุงเทพมหานคร',420000,420000,420000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1103433':['HP ศูนย์การค้าแฟชั่นไอส์แลนด์','กรุงเทพมหานคร',400000,400000,400000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1103443':['HP จรัญสนิทวงศ์','กรุงเทพมหานคร',210000,210000,210000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1103519':['HP มุกดาหาร','มุกดาหาร',140000,140000,140000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103506':['HP รังสิตคลอง 4','ปทุมธานี',150000,150000,150000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1103509':['HP ฟิวเจอร์ปาร์ครังสิต','ปทุมธานี',350000,350000,350000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1103446':['HP ลาดกระบัง','กรุงเทพมหานคร',200000,200000,200000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1110247':['HP บางบัวทอง','นนทบุรี',200000,215000,215000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1110655':['HP ลำพูน','ลำพูน',150000,150000,150000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1111749':['HP เชียงใหม่ รวมโชค','เชียงใหม่',200000,200000,200000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1111890':['HP ภูเก็ตเชิงทะเล','ภูเก็ต',400000,400000,400000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1113282':['HP แหลมฉบัง','ชลบุรี',160000,160000,160000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1110218':['HP ภูเก็ต เจ้าฟ้า','ภูเก็ต',650000,650000,650000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1113998':['HP สมุย(เฉวง)สาขาเปิดใหม่','สุราษฎร์ธานี',550000,550000,550000,'คุณตะวัน ทานตะวัน','ภาคกลาง'],
+    '1103479':['HP Megahome ขอนแก่น','ขอนแก่น',350000,350000,350000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1103543':['HP Megahome อุดรธานี','อุดรธานี',350000,350000,350000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103505':['HP Megahome ลำลูกกา','ปทุมธานี',400000,400000,410000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1103470':['HP Megahome เชียงราย','เชียงราย',320000,320000,320000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1111264':['HP Megahome ระยอง (ทับมา)','ระยอง',405000,405000,410000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1112657':['HP Megahome แม่สาย','แม่ฮ่องสอน',600000,600000,600000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1113193':['HP Megahome พุทธมณฑลสาย 4','นครปฐม',300000,300000,300000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+  },
+  'Thai Watsadu':{
+    '1102345':['B&B ภูเก็ต','ภูเก็ต',650000,650000,650000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1102321':['TWD บางบัวทอง','นนทบุรี',1250000,1250000,1250000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1102278':['TWD สุขาภิบาล 3','กรุงเทพมหานคร',1150000,1000000,1150000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1102316':['TWD บางนา','สมุทรปราการ',1700000,1850000,1850000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1102348':['TWD พิษณุโลก','พิษณุโลก',700000,700000,700000,'คุณญาญ่า ณัฐภาสรณ์','ภาคกลาง'],
+    '1102291':['TWD  ลำปาง','ลำปาง',800000,850000,800000,'คุณญาญ่า ณัฐภาสรณ์','ภาคเหนือ'],
+    '1102329':['TWD บุรีรัมย์','บุรีรัมย์',600000,600000,600000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1102305':['TWD สุรินทร์','สุรินทร์',700000,700000,700000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1102306':['TWD มหาชัย','สมุทรสาคร',600000,600000,600000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1102302':['TWD สุราษฎร์ธานี','สุราษฎร์ธานี',600000,650000,650000,'คุณตะวัน ทานตะวัน','ภาคใต้'],
+    '1102362':['TWD สกลนคร','สกลนคร',550000,550000,550000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1102351':['TWD ขอนแก่น','ขอนแก่น',490000,510000,510000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1102292':['TWD ชะอำ','เพชรบุรี',850000,900000,900000,'คุณแทน กฤษดา','ภาคตะวันตก'],
+    '1102286':['TWD หาดใหญ่','สงขลา',1200000,1200000,1250000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1102281':['TWD ลพบุรี','ลพบุรี',900000,1000000,1000000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1102300':['TWD จันทบุรี','จันทบุรี',850000,900000,900000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1102289':['TWD อุบล','อุบลราชธานี',560000,560000,560000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1102295':['TWD เชียงใหม่','เชียงใหม่',600000,800000,800000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1102296':['TWD ร้อยเอ็ด','ร้อยเอ็ด',590000,590000,670000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1102347':['TWD สุพรรณบุรี','สุพรรณบุรี',600000,600000,600000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1102337':['TWD กาญจบุรี','กาญจนบุรี',700000,700000,700000,'คุณโก๋ ทวีโชค','ภาคตะวันตก'],
+    '1102353':['TWD  ฉะเชิงเทรา','ฉะเชิงเทรา',990000,990000,990000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1102293':['TWD  ระยอง','ระยอง',800000,800000,800000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1102328':['TWD เพชรบูรณ์','เพชรบูรณ์',350000,350000,350000,'คุณบิว อภิมน','ภาคกลาง'],
+    '1102298':['TWD ศาลายา','นครปฐม',700000,700000,700000,'คุณโก๋ ทวีโชค','ภาคกลาง'],
+    '1102283':['TWD มหาสารคาม','มหาสารคาม',750000,750000,750000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1102330':['TWD ตรัง','ตรัง',1100000,1100000,1100000,'คุณเอ็ม ก้องเกียรติ','ภาคใต้'],
+    '1102342':['TWD ตาก','ตาก',200000,200000,200000,'คุณญาญ่า ณัฐภาสรณ์','ภาคตะวันตก'],
+    '1102340':['TWD มุกดาหาร','มุกดาหาร',280000,280000,280000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1102360':['TWD หนองบัวลำภู','หนองบัวลำภู',510000,600000,510000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1102354':['TWD อุดร','อุดรธานี',400000,400000,400000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1102297':['TWD สระบุรี','สระบุรี',1350000,1450000,1350000,'คุณกระปุก กัฌปนาทมณี','ภาคกลาง'],
+    '1102331':['TWD ชลบุรี','ชลบุรี',500000,500000,500000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1102318':['TWD ปทุมธานี','ปทุมธานี',720000,750000,750000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1102346':['TWD ภูเก็ต','ภูเก็ต',1700000,1700000,1700000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1102359':['TWD  พัทยาใต้','ชลบุรี',700000,750000,700000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1102349':['TWD  เชียงราย','เชียงราย',800000,750000,750000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1102322':['TWD บางพลี','สมุทรปราการ',700000,750000,700000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1102355':['TWD ศรีราชา','ชลบุรี',500000,520000,500000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1102277':['TWD  นวมินทร์','กรุงเทพมหานคร',1550000,1600000,1650000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1102319':['TWD  แจ้งวัฒนะ','นนทบุรี',780000,850000,850000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1102285':['TWD รังสิต','ปทุมธานี',720000,720000,740000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1102279':['TWD  พระราม 2','กรุงเทพมหานคร',1250000,1250000,1250000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1102323':['TWD ชัยพฤกษ์','นนทบุรี',900000,950000,900000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1102344':['TWD ลำลูกกา','ปทุมธานี',910000,920000,920000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1102363':['TWD อ้อมน้อย','สมุทรสาคร',600000,600000,650000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1102335':['TWD นครราชสีมา','นครราชสีมา',1000000,1000000,1050000,'คุณกระปุก กัฌปนาทมณี','ภาคตะวันออกเฉียงเหนือ'],
+    '1102343':['TWD นครปฐม','นครปฐม',650000,650000,650000,'คุณโก๋ ทวีโชค','ภาคกลาง'],
+    '1102301':['TWD ศรีมหาโพธิ','ปราจีนบุรี',600000,600000,600000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1102327':['TWD บ้านฉาง','ระยอง',450000,510000,510000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1102276':['TWD หนองจอก','กรุงเทพมหานคร',455000,455000,510000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1102356':['TWDปากช่อง','นครราชสีมา',700000,700000,700000,'คุณกระปุก กัฌปนาทมณี','ภาคตะวันออกเฉียงเหนือ'],
+    '1102304':['TWDเพชรบุรี','เพชรบุรี',550000,550000,550000,'คุณแทน กฤษดา','ภาคตะวันตก'],
+    '1102303':['TWDนครศรีธรรมราช','นครศรีธรรมราช',600000,600000,600000,'คุณเอ็ม ก้องเกียรติ','ภาคใต้'],
+    '1102324':['TWDสุขสวัสดิ์','สมุทรปราการ',850000,850000,850000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1102312':['TWDบ่อวิน','ชลบุรี',150000,150000,150000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1102284':['TWD  อยุธยา','พระนครศรีอยุธยา',750000,750000,750000,'คุณโก๋ ทวีโชค','ภาคกลาง'],
+    '1102308':['TWD  สงขลา','สงขลา',650000,650000,600000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1102332':['TWD  ศรีสมาน','นนทบุรี',700000,750000,750000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1102310':['TWD ชัยภูมิ','ชัยภูมิ',450000,450000,450000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1102361':['TWD บางแสน','ชลบุรี',610000,610000,610000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1102294':['TWD น่าน','น่าน',750000,750000,800000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1102320':['TWD บางบอน','สมุทรสาคร',460000,460000,510000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1102341':['TWD แม่จัน','เชียงราย',650000,650000,650000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1102333':['TWD คลองสี่','ปทุมธานี',1120000,1150000,1150000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1102357':['TWD นครราชสีมา (หัวทะเล)','นครราชสีมา',400000,400000,400000,'คุณกระปุก กัฌปนาทมณี','ภาคตะวันออกเฉียงเหนือ'],
+    '1102299':['TWD กำแพงเพชร','กำแพงเพชร',580000,580000,580000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1102290':['TWD ภูเก็ต (ฉลอง)','ภูเก็ต',750000,800000,950000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1102287':['TWD เมืองเอก','ปทุมธานี',720000,740000,740000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1102325':['TWD สมุทรปราการ','สมุทรปราการ',1350000,1350000,1400000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1102326':['TWD ชัยนาท','ชัยนาท',510000,510000,510000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1102338':['TWD ศรีสะเกษ','ศรีสะเกษ',540000,540000,540000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1102350':['TWD เชียงใหม่ สันทราย','เชียงใหม่',900000,1000000,1000000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1102282':['TWD เลย','เลย',550000,550000,600000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1102336':['TWD บางใหญ่','นนทบุรี',950000,1000000,1050000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1110107':['TWD นครอินทร์','นนทบุรี',850000,850000,900000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1110201':['TWD ยโสธร','ยโสธร',400000,400000,400000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1110220':['TWD นครสวรรค์','นครสวรรค์',600000,600000,550000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1110291':['TWD อุดรธานี กุดสระ','อุดรธานี',200000,200000,200000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1110635':['TWD อรัญประเทศ','สระแก้ว',480000,510000,510000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1110636':['TWD สระแก้ว','สระแก้ว',400000,400000,400000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1110711':['TWD แกลง','ระยอง',520000,565000,565000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1110977':['TWD พระราม3','กรุงเทพมหานคร',845000,895000,950000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1111074':['TWD อุทัยธานี','อุทัยธานี',480000,480000,480000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1111362':['TWD แพร่','แพร่',400000,450000,400000,'คุณญาญ่า ณัฐภาสรณ์','ภาคเหนือ'],
+    '1102309':['TWD มิตรภาพขอนแก่น','ขอนแก่น',400000,380000,380000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1111907':['TWD กาฬสินธุ์','กาฬสินธุ์',510000,510000,510000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1112975':['TWD นครนายก','นครนายก',450000,460000,450000,'คุณเสก เสกสัน','ภาคกลาง'],
+    '1102313':['TWD รัตนาธิเบศน์','กรุงเทพมหานคร',450000,450000,500000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+  },
+  'Global House':{
+    '1103643':['SGH ร้อยเอ็ด','ร้อยเอ็ด',800000,800000,795000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103623':['SGH ขอนแก่น','ขอนแก่น',1050000,1050000,850000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1103654':['SGH อุดรธานี','อุดรธานี',150000,170000,300000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103601':['SGH เวียงกุมกาม','เชียงใหม่',1050000,1050000,980000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1103600':['SGH ระยอง','ระยอง',550000,550000,550000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1103624':['SGH ชลบุรี','ชลบุรี',180000,180000,180000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1103645':['SGH นครปฐม','นครปฐม',120000,120000,120000,'คุณโก๋ ทวีโชค','ภาคกลาง'],
+    '1103588':['SGH ราชบุรี','ราชบุรี',550000,550000,550000,'คุณโก๋ ทวีโชค','ภาคตะวันตก'],
+    '1103646':['SGH กาฬสินธุ์','กาฬสินธุ์',690000,690000,700000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103656':['SGH นครสวรรค์','นครสวรรค์',750000,750000,750000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1103596':['SGH มหาสารคาม','มหาสารคาม',660000,600000,600000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103663':['SGH บ้านไผ่','ขอนแก่น',730000,750000,750000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1103657':['SGH หนองคาย','หนองคาย',400000,400000,400000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103619':['SGH นครราชสีมา','นครราชสีมา',850000,850000,850000,'คุณกระปุก กัฌปนาทมณี','ภาคตะวันออกเฉียงเหนือ'],
+    '1103604':['SGH สกลนคร','สกลนคร',480000,480000,480000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103658':['SGH นครพนม','นครพนม',550000,550000,550000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103659':['SGH ชัยภูมิ','ชัยภูมิ',480000,480000,480000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1103590':['SGH สุรินทร์','สุรินทร์',200000,200000,200000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1103649':['SGH พิษณุโลก','พิษณุโลก',700000,750000,750000,'คุณญาญ่า ณัฐภาสรณ์','ภาคกลาง'],
+    '1103651':['SGH ลำพูน','ลำพูน',800000,800000,800000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1103637':['SGH มุกดาหาร','มุกดาหาร',600000,600000,550000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103627':['SGH ประจวบคีรีขันธ์','ประจวบคีรีขันธ์',350000,250000,250000,'คุณแทน กฤษดา','ภาคตะวันตก'],
+    '1103626':['SGH ลำปาง','ลำปาง',500000,550000,500000,'คุณญาญ่า ณัฐภาสรณ์','ภาคเหนือ'],
+    '1103642':['SGH แพร่','แพร่',600000,600000,550000,'คุณญาญ่า ณัฐภาสรณ์','ภาคเหนือ'],
+    '1103593':['SGH น่าน','น่าน',550000,550000,550000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1103602':['SGH เชียงราย','เชียงราย',700000,750000,750000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1103618':['SGH สุโขทัย','สุโขทัย',640000,600000,650000,'คุณญาญ่า ณัฐภาสรณ์','ภาคกลาง'],
+    '1103609':['SGH อุบลราชธานี','อุบลราชธานี',550000,550000,550000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103605':['SGH กำแพงเพชร','กำแพงเพชร',730000,750000,750000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1103606':['SGH เพชรบูรณ์','เพชรบูรณ์',370000,370000,370000,'คุณบิว อภิมน','ภาคกลาง'],
+    '1103608':['SGH ลพบุรี','ลพบุรี',190000,190000,190000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1103586':['SGH จันทบุรี','จันทบุรี',300000,300000,300000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1103648':['SGH ตราด','ตราด',1200000,1350000,1350000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1103621':['SGH บ้านตาด','อุดรธานี',450000,450000,450000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103622':['SGH พะเยา','พะเยา',590000,660000,650000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1103583':['SGH บุรีรัมย์','บุรีรัมย์',180000,180000,180000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1103647':['SGH ปราณบุรี','ประจวบคีรีขันธ์',550000,530000,550000,'คุณแทน กฤษดา','ภาคตะวันตก'],
+    '1103614':['SGH เทพารักษ์','สมุทรปราการ',200000,200000,200000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1103660':['SGH หนองบัวลำภู','หนองบัวลำภู',520000,520000,520000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103644':['SGH สมุทรสงคราม','สมุทรสงคราม',513000,513000,513000,'คุณแทน กฤษดา','ภาคกลาง'],
+    '1103616':['SGH อยุธยา','พระนครศรีอยุธยา',200000,200000,200000,'คุณโก๋ ทวีโชค','ภาคกลาง'],
+    '1103634':['SGH นครนายก','นครนายก',900000,900000,900000,'คุณเสก เสกสัน','ภาคกลาง'],
+    '1103615':['SGH ปทุมธานี1','ปทุมธานี',150000,150000,150000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1103599':['SGH ศาลายา','นครปฐม',150000,150000,150000,'คุณโก๋ ทวีโชค','ภาคกลาง'],
+    '1103629':['SGH นครศรีธรรมราช','นครศรีธรรมราช',500000,500000,500000,'คุณเอ็ม ก้องเกียรติ','ภาคใต้'],
+    '1103625':['SGH บึงกาฬ','บึงกาฬ',500000,500000,500000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103612':['SGH สุราษฎร์ธานี','สุราษฎร์ธานี',250000,250000,250000,'คุณตะวัน ทานตะวัน','ภาคใต้'],
+    '1103584':['SGH กาญจนบุรี','กาญจนบุรี',580000,580000,580000,'คุณโก๋ ทวีโชค','ภาคตะวันตก'],
+    '1103595':['SGH สิงห์บุรี','สิงห์บุรี',900000,900000,900000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1103597':['SGH ยโสธร','ยโสธร',800000,800000,800000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103636':['SGH อ่างทอง','อ่างทอง',420000,420000,420000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1103607':['SGH เลย','เลย',500000,550000,550000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103585':['SGH พัทลุง','พัทลุง',580000,600000,600000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1103631':['SGH อุตรดิตถ์','อุตรดิตถ์',750000,750000,750000,'คุณญาญ่า ณัฐภาสรณ์','ภาคเหนือ'],
+    '1103591':['SGH ชุมแพ','ขอนแก่น',700000,750000,750000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1103589':['SGH ภูเก็ต','ภูเก็ต',250000,250000,250000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1103632':['SGH แม่สาย','เชียงราย',700000,700000,700000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1103635':['SGH พังโคน','สกลนคร',480000,480000,480000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103630':['SGH แม่ฮ่องสอน','แม่ฮ่องสอน',300000,400000,400000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1103592':['SGH โชคชัย','นครราชสีมา',950000,1050000,1050000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1103617':['SGH ชัยนาท','ชัยนาท',600000,650000,680000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1103653':['SGH ฝาง','เชียงใหม่',450000,480000,480000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1103594':['SGH ด่านขุนทด','นครราชสีมา',600000,600000,600000,'คุณกระปุก กัฌปนาทมณี','ภาคตะวันออกเฉียงเหนือ'],
+    '1103620':['SGH สตูล','สตูล',200000,200000,200000,'คุณเอ็ม ก้องเกียรติ','ภาคใต้'],
+    '1103639':['SGH เดชอุดม','อุบลราชธานี',654000,654000,654000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103661':['SGH กันทรลักษ์','ศรีสะเกษ',660000,660000,660000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103598':['SGH นางรอง','บุรีรัมย์',280000,280000,280000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1103603':['SGH ไทรน้อย','นนทบุรี',200000,200000,200000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1103662':['SGH หนองหาน','อุดรธานี',220000,220000,220000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103587':['SGH กระทุ่มแบน','กรุงเทพมหานคร',220000,220000,220000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1103628':['SGH พยัคฆภูมิพิสัย','มหาสารคาม',560000,560000,560000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103638':['SGH กบินทร์บุรี','ปราจีนบุรี',280000,280000,280000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1103611':['SGH กุฉินารายณ์','กาฬสินธุ์',500000,500000,500000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103641':['SGH สมุย','สุราษฎร์ธานี',800000,840000,810000,'คุณตะวัน ทานตะวัน','ภาคใต้'],
+    '1103640':['SGH พาน','เชียงราย',200000,200000,200000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1103650':['SGH เวียงป่าเป้า','เชียงราย',600000,600000,600000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1103610':['SGH พิจิตร','พิจิตร',600000,550000,550000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1103613':['SGH ระนอง','ระนอง',200000,200000,200000,'คุณตะวัน ทานตะวัน','ภาคใต้'],
+    '1103652':['SGH โพนทอง','ร้อยเอ็ด',210000,210000,210000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103655':['SGH เลิงนกทา','ยโสธร',250000,250000,250000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1110082':['SGH กระนวน','ขอนแก่น',250000,250000,250000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1110313':['SGH ชุมพร','ชุมพร',250000,250000,250000,'คุณตะวัน ทานตะวัน','ภาคใต้'],
+    '1110633':['SGH พิมาย','นครราชสีมา',500000,500000,500000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1110826':['SGH ปัตตนี','ปัตตานี',480000,480000,480000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1110828':['SGH จะนะ','สงขลา',300000,300000,300000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1111440':['SGH สว่างแดนดิน','สกลนคร',250000,250000,250000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1111609':['SGH  ลำปลายมาศ','บุรีรัมย์',300000,400000,400000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1111812':['SGH  สวรรคโลก','สุโขทัย',280000,280000,280000,'คุณญาญ่า ณัฐภาสรณ์','ภาคกลาง'],
+    '1112201':['SGH  บ้านดุง','อุดรธานี',400000,400000,400000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1112061':['SGH  นราธิวาส','นราธิวาส',440000,450000,450000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1112969':['SGH  แม่สอด','ตาก',180000,180000,180000,'คุณญาญ่า ณัฐภาสรณ์','ภาคตะวันตก'],
+  },
+  'Megahome':{
+    '1103457':['Megahome คลองหลวง (รังสิต)','ปทุมธานี',980000,980000,980000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1103471':['Megahome แม่สอด','ตาก',850000,850000,850000,'คุณญาญ่า ณัฐภาสรณ์','ภาคตะวันตก'],
+    '1103518':['Megahome หนองคาย','หนองคาย',400000,400000,400000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103484':['Megahome บ่อวิน','ชลบุรี',810000,810000,810000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1103520':['Megahome กบินทร์บุรี','ปราจีนบุรี',800000,800000,800000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1103445':['Megahome มีนบุรี','กรุงเทพมหานคร',1100000,1100000,1100000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1103504':['Megahome อรัญประเทศ','สระแก้ว',880000,880000,880000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1103530':['Megahome โรจนะ','พระนครศรีอยุธยา',300000,300000,300000,'คุณกระปุก กัฌปนาทมณี','ภาคกลาง'],
+    '1103458':['Megahome หาดใหญ่','สงขลา',900000,900000,900000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1103544':['Megahome โคราช','นครราชสีมา',350000,380000,380000,'คุณกระปุก กัฌปนาทมณี','ภาคตะวันออกเฉียงเหนือ'],
+    '1103534':['Megahome นครพนม','นครพนม',380000,380000,380000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103501':['Megahome เชียงราย','เชียงราย',1200000,1200000,1200000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1103515':['Megahome บ้านฉาง','ระยอง',780000,800000,820000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1103491':['Megahome บางนาตราด','สมุทรปราการ',280000,280000,280000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1103540':['Megahome พัทยา','ชลบุรี',900000,900000,900000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1103456':['Megahome ฉะเชิงเทรา','ฉะเชิงเทรา',400000,400000,400000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1103517':['Megahome สุราษฎร์ธานี','สุราษฎร์ธานี',600000,600000,600000,'คุณตะวัน ทานตะวัน','ภาคใต้'],
+    '1103497':['Megahome  รัตนาธิเบศร์','นนทบุรี',750000,750000,750000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1103493':['Megahome บางพลี','สมุทรปราการ',180000,180000,180000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1103503':['Megahome ติวานนท์','นนทบุรี',300000,280000,280000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1103535':['Megahome นครปฐม','นครปฐม',150000,150000,150000,'คุณโก๋ ทวีโชค','ภาคกลาง'],
+    '1103468':['Megahome เชียงใหม่','เชียงใหม่',550000,550000,550000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1103531':['Megahome บางแสน','ชลบุรี',300000,300000,300000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1103510':['Megahome ปลวกแดง','ระยอง',490000,530000,520000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1110105':['Megahome ทุ่งสง','นครศรีธรรมราช',520000,520000,520000,'คุณเอ็ม ก้องเกียรติ','ภาคใต้'],
+    '1113281':['Megahome เวียงสระ','สุราษฎร์ธานี',250000,250000,250000,'คุณตะวัน ทานตะวัน','ภาคใต้'],
+  },
+  'DoHome':{
+    '1112976':['DH อุบลราชธานี','อุบลราชธานี',3000000,3500000,3260000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103731':['DH โคราช','นครราชสีมา',2200000,2400000,2200000,'คุณกระปุก กัฌปนาทมณี','ภาคตะวันออกเฉียงเหนือ'],
+    '1103726':['DH รังสิต','ปทุมธานี',2000000,2000000,2000000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1103729':['DH ขอนแก่น','ขอนแก่น',1850000,1550000,1800000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1103732':['DH อุดรธานี','อุดรธานี',1100000,750000,750000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1103710':['DH พระราม 2','สมุทรสาคร',800000,700000,750000,'คุณแทน กฤษดา','ภาคกลาง'],
+    '1103727':['DH บางบัวทอง','นนทบุรี',800000,800000,1050000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1103735':['DH เชียงใหม่','เชียงใหม่',1300000,1100000,1300000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1103719':['DH บางนา','ฉะเชิงเทรา',320000,330000,310000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1103734':['DH เพชรเกษม','กรุงเทพมหานคร',800000,820000,800000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1103713':['DH สุรินทร์','สุรินทร์',1220000,1150000,1100000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1103724':['DH มาบตะพุด','ระยอง',1200000,1225000,1225000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1103718':['DH แหลมฉบัง (บางละมุง)','ชลบุรี',1100000,1100000,1300000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1103725':['DH บ่อวิน','ระยอง',600000,700000,700000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1103730':['DH ชลบุรี(อมตะนคร)','ชลบุรี',1100000,1100000,1100000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1103716':['DH สุราษฎร์ธานี','สุราษฎร์ธานี',1500000,1600000,1700000,'คุณตะวัน ทานตะวัน','ภาคใต้'],
+    '1103733':['DH หาดใหญ่','สงขลา',880000,800000,800000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1103720':['DH พิษณุโลก','พิษณุโลก',950000,950000,900000,'คุณญาญ่า ณัฐภาสรณ์','ภาคกลาง'],
+    '1103723':['DH กาญจนบุรี','กาญจนบุรี',480000,500000,500000,'คุณโก๋ ทวีโชค','ภาคตะวันตก'],
+    '1103707':['DH บุรีรัมย์','บุรีรัมย์',850000,600000,600000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1103714':['DH ชัยภูมิ','ชัยภูมิ',990000,950000,950000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1103711':['DH เชียงราย','เชียงราย',750000,700000,700000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1103709':['DH อยุธยา','พระนครศรีอยุธยา',550000,550000,540000,'คุณกระปุก กัฌปนาทมณี','ภาคกลาง'],
+    '1110151':['DH บางพูน','ปทุมธานี',520000,520000,520000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1112232':['DH นครสวรรค์','นครสวรรค์',450000,450000,450000,'คุณเบลล์ ณัฐพล','ภาคกลาง'],
+    '1112236':['DH เทพารักษ์','สมุทรปราการ',450000,450000,450000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1113451':['DH ภูเก็ต','ภูเก็ต',640000,650000,690000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1110637':['บริษัท เฮงเจริญ โก อัพ จำกัด','นครราชสีมา',200000,200000,200000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1111177':['บริษัท เสริมสิน 1973 จำกัด','นครราชสีมา',150000,120000,120000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1111915':['ร้านพิเชียรวัสดุ','อุบลราชธานี',100000,100000,100000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1113324':['หจก.ดีเอ็นเอ โกลบอลอะโกร','นครราชสีมา',50000,50000,50000,'คุณกระปุก กัฌปนาทมณี','ภาคตะวันออกเฉียงเหนือ'],
+  },
+  'DoHome Togo':{
+    '1103717':['To go ตลาดรวยทรัพย์ บางพลี','สมุทรปราการ',50000,50000,50000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1103706':['To go ตลาดนัดทับยาว (ลาดกระบัง)','กรุงเทพมหานคร',60000,60000,60000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1103721':['To go ตลาดมารวย','กรุงเทพมหานคร',60000,60000,60000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1103715':['To go บางศรีเมือง','นนทบุรี',50000,35000,40000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1103712':['To go ท่าอิฐไทรม้า','กรุงเทพมหานคร',60000,40000,40000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1103722':['To go ซ.วัดกู้','นนทบุรี',50000,30000,45000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1110217':['To go ซ.มังกร','สมุทรปราการ',60000,60000,60000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1110234':['To go แก้วอินทร์','นนทบุรี',50000,40000,40000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1110283':['To go คลอง 7','ปทุมธานี',60000,60000,60000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1110344':['To go คลอง 4','ปทุมธานี',50000,50000,50000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1111050':['To go หนามแดง','สมุทรปราการ',50000,50000,50000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1111052':['To go ทรัพย์พัฒนา','สมุทรปราการ',50000,50000,50000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1111234':['To go บ้านกล้วย','นนทบุรี',50000,50000,40000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1111232':['To go ซอยพระเงิน','นนทบุรี',50000,30000,40000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1112424':['To go ไทยสมบูรณ์','ปทุมธานี',60000,60000,60000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1112425':['To go อัจฉริยะ','นนทบุรี',50000,50000,50000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1113076':['To go ประชาอุทิศ 90','สมุทรปราการ',60000,60000,60000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1113384':['To go บางปลา','สมุทรสาคร',50000,50000,50000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1113323':['To go วัดลาดปลาดุก','นนทบุรี',50000,50000,50000,'คุณปุ๊ก อรพิน','ภาคกลาง'],
+    '1113448':['To go เฉลิมพระเกียรติ ร9','กรุงเทพมหานคร',60000,60000,60000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1113449':['To go ตลาดกิเลน','นครปฐม',50000,50000,50000,'คุณโก๋ ทวีโชค','ภาคกลาง'],
+    '1113569':['To go สินสาคร','สมุทรสาคร',50000,50000,50000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1113624':['To go ราษฎร์พัฒนา( New Store_Feb  )','กรุงเทพมหานคร',50000,50000,50000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1113924':['To go มาเจริญ( New Store_Feb  )','กรุงเทพมหานคร',50000,50000,50000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1113873':['To go คลองหลวง( New Store_Feb  )','ปทุมธานี',50000,50000,50000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+    '1113966':['To go สวนหลวง( New Store_Feb  )','สมุทรสาคร',50000,50000,50000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+  },
+  'HomeHub':{
+    '1105875':['HH อุบล (วาริน)','อุบลราชธานี',540000,600000,450000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1105874':['HH อุบล (ทัพไท)','อุบลราชธานี',1200000,1000000,800000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1105873':['HH ขอนแก่น','ขอนแก่น',550000,510000,470000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1105871':['HH อำนาจเจริญ','อำนาจเจริญ',350000,420000,350000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+  },
+  'บุญถาวร':{
+    '1103748':['BTV รัชดาภิเษก','กรุงเทพมหานคร',200000,200000,200000,'คุณแจม สุกฤตา','ภาคกลาง'],
+    '1103749':['BTV ปิ่นเกล้า','กรุงเทพมหานคร',100000,100000,100000,'คุณต้า นภัสนันท์','ภาคกลาง'],
+    '1103759':['BTV เชียงใหม่','เชียงใหม่',100000,100000,100000,'คุณต่าย อรวรรณ','ภาคเหนือ'],
+    '1103757':['BTV อุดรธานี','อุดรธานี',100000,100000,100000,'คุณเท่ห์ สุทธิพงษ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1112021':['BTV โคราช','นครราชสีมา',140000,140000,140000,'คุณกระปุก กัฌปนาทมณี','ภาคตะวันออกเฉียงเหนือ'],
+  },
+  'ฮาร์ดแวร์เฮ้าส์':{
+    '1104181':['บริษัท ฮาร์ดแวร์เฮาส์ จำกัด (สาขาบางนา)','สมุทรปราการ',800000,800000,800000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1104185':['บริษัท ฮาร์ดแวร์เฮาส์ จำกัด (สาขาศรีราชา)','ชลบุรี',1100000,1100000,1100000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1104183':['บริษัท ฮาร์ดแวร์เฮาส์ จำกัด (สาขาระยอง)','ระยอง',1050000,1125000,1125000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1104178':['บริษัท ฮาร์ดแวร์เฮาส์ จำกัด (สาขาบ่อวิน)','ชลบุรี',650000,650000,650000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1104182':['บริษัท ฮาร์ดแวร์เฮาส์ จำกัด (สาขาอมตะนคร)','ชลบุรี',550000,550000,550000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1105176':['บริษัท พี เอส ที คอมเมอร์เชียล จำกัด(ฮาร์ดแวร์ อยุธยา)','พระนครศรีอยุธยา',350000,370000,370000,'คุณกระปุก กัฌปนาทมณี','ภาคกลาง'],
+    '1104180':['บริษัท ฮาร์ดแวร์เฮาส์ จำกัด (สาขาเทพารักษ์)','สมุทรปราการ',480000,480000,500000,'คุณหมิว ชไมพร','ภาคกลาง'],
+    '1104179':['บริษัท ฮาร์ดแวร์เฮาส์ จำกัด (สาขาปราจีนบุรี)','ปราจีนบุรี',300000,300000,320000,'คุณเสก เสกสัน','ภาคตะวันออก'],
+    '1110649':['บริษัท ฮาร์ดแวร์เฮาส์ จำกัด (สาขาแหลมฉบัง)','ชลบุรี',320000,320000,322000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1111319':['บริษัท ฮาร์ดแวร์เฮาส์ จำกัด (สาขาปลวกแดง)','ระยอง',320000,320000,330000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+    '1111936':['บริษัท ฮาร์ดแวร์เฮาส์ จำกัด (สาขาบ่อวินอมตะซิตี้)','ชลบุรี',380000,380000,360000,'คุณมินทร์ มินท์มันตา','ภาคตะวันออก'],
+    '1112560':['บริษัท ฮาร์ดแวร์เฮาส์ จำกัด (สาขารังสิต)','ปทุมธานี',200000,200000,200000,'คุณเบนซ์ อนุชาติ','ภาคกลาง'],
+  },
+  'โฮมบุญ':{
+    '1106444':['บริษัท แสงไพบูลย์เชียงราย จำกัด','เชียงราย',140000,140000,140000,'คุณลม จิตรลดา','ภาคเหนือ'],
+    '1105965':['หจก. เปรมปรีดิ์ ศูนย์รวมวัสดุ','ขอนแก่น',310000,310000,310000,'คุณบิว อภิมน','ภาคตะวันออกเฉียงเหนือ'],
+    '1105879':['บริษัท เมืองวัสดุ จำกัด','อุบลราชธานี',310000,310000,310000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1107039':['บริษัท โฮมมาร์ท ซ.โลหะกิจ จำกัด','กระบี่',490000,490000,490000,'คุณปลา ชุติมันต์','ภาคใต้'],
+    '1107278':['บริษัท ทรีเค โฮมโซลูชั่น จำกัด','สงขลา',150000,150000,150000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1107005':['บริษัท ศิริภัณฑ์ ท่าศาลา จำกัด','นครศรีธรรมราช',190000,190000,190000,'คุณเอ็ม ก้องเกียรติ','ภาคใต้'],
+    '1107324':['c-home พัทลุง','พัทลุง',200000,200000,200000,'คุณน้อง นฤมล','ภาคใต้'],
+    '1105545':['SCG บุญถาวร จันทบุรี','จันทบุรี',150000,150000,150000,'คุณบิ๊ก ปรัศนีย์','ภาคตะวันออก'],
+  },
+  'โฮมเพ้นท์':{
+    '1101333':['บริษัท โฮมเพ้นท์ จำกัด สาขารามคำแหง','กรุงเทพมหานคร',820000,800000,800000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101340':['บริษัท โฮมเพ้นท์ จำกัดสาขาปิ่นเกล้า- ราชพฤกษ์','กรุงเทพมหานคร',770000,750000,800000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101342':['บริษัท โฮมเพ้นท์ จำกัดสาขาศรีนครินทร์- บางนา','กรุงเทพมหานคร',590000,600000,600000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101338':['บริษัท โฮมเพ้นท์ จำกัดสาขากาญจนาภิเษก- บางใหญ่','กรุงเทพมหานคร',600000,620000,620000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101332':['บริษัท โฮมเพ้นท์ จำกัดสาขามีนบุรี-แยก มิสทีน','กรุงเทพมหานคร',900000,900000,900000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101339':['บริษัท โฮมเพ้นท์ จำกัด สาขา รัตนาธิเบศร์-ราชพฤกษ์','กรุงเทพมหานคร',820000,840000,840000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101334':['บริษัท โฮมเพ้นท์ จำกัดสาขาบางบัวทอง-กาญจนาภิเษก','กรุงเทพมหานคร',900000,800000,800000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101329':['บริษัท โฮมเพ้นท์ จำกัด สาขาร่มเกล้า-กรุงเทพกรีฑาตัดใหม่','กรุงเทพมหานคร',650000,600000,600000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101330':['บริษัท โฮมเพ้นท์ จำกัด สาขาบางแค','กรุงเทพมหานคร',1100000,950000,1050000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101335':['บริษัท โฮมเพ้นท์ จำกัด สาขาเทพารักษ์','กรุงเทพมหานคร',450000,450000,450000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101337':['บริษัท โฮมเพ้นท์ จำกัด สาขาสมุทรปราการ-ศรีนครินทร์','กรุงเทพมหานคร',450000,450000,450000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101341':['บริษัท โฮมเพ้นท์ จำกัด ลำลูกกา-สายไหม','กรุงเทพมหานคร',450000,460000,460000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1101336':['บริษัท โฮมเพ้นท์ จำกัด ติวานนท์-ปากเกร็ด','กรุงเทพมหานคร',500000,500000,550000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1110307':['บริษัท โฮมเพ้นท์ จำกัด รามอินทรา-มีนบุรี','กรุงเทพมหานคร',550000,500000,500000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1110634':['บริษัท โฮมเพ้นท์ จำกัด สาขากิ่งแก้ว - สุวรรณภูมิ','กรุงเทพมหานคร',450000,450000,500000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1111758':['บริษัท โฮมเพ้นท์ จำกัด สาขารังสิต-นครนายก คลอง4','กรุงเทพมหานคร',520000,550000,500000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1113287':['บริษัท โฮมเพ้นท์ จำกัด สาขาบางบอน-กาญจนาภิเษก','กรุงเทพมหานคร',350000,350000,350000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+    '1113848':['บริษัท โฮมเพ้นท์ จำกัด สาขาอ้อมน้อย-เพชรเกษม','กรุงเทพมหานคร',350000,350000,350000,'คุณโอ๊ต ณัฐวุฒิ','ภาคกลาง'],
+  },
+  'ศิริมหาชัย':{
+    '1110334':['SRโฮมเซ็นเตอร์ (อุบลราชธานี)','อุบลราชธานี',1450000,1350000,1300000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1105825':['SR ศรีสะเกษ','ศรีสะเกษ',1600000,1550000,1500000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+    '1106202':['SR มุกดาหาร','มุกดาหาร',630000,630000,750000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1111140':['SR อำนาจเจริญ','อำนาจเจริญ',370000,440000,440000,'คุณต่อ ณัฏฐ์วัฒน์','ภาคตะวันออกเฉียงเหนือ'],
+  },
+  'Homeshop':{
+    '1106115':['HS ร้อยเอ็ด','ร้อยเอ็ด',250000,250000,250000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1106122':['HS พยัคฆภูมิพิสัย','มหาสารคาม',150000,150000,150000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1106118':['HS บัวขาว (กุฉินารายณ์)','กาฬสินธุ์',180000,230000,180000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1106114':['HS นางรอง','บุรีรัมย์',190000,210000,190000,'คุณหนุ่ม วชิระ','ภาคตะวันออกเฉียงเหนือ'],
+    '1106123':['HS สุวรรณภูมิ','ร้อยเอ็ด',275000,275000,275000,'คุณบอล ศุทธสิทธิ์','ภาคตะวันออกเฉียงเหนือ'],
+    '1106119':['HS พังโคน','สกลนคร',135000,135000,135000,'คุณเปรี้ยว กิติยาภรณ์','ภาคตะวันออกเฉียงเหนือ'],
+  },
+};
+
+// Helper: get branch info by chain+code
+function getBranch(ch,bc){ return (BRANCHES[ch]&&BRANCHES[ch][bc])||null; }
+
+// Helper: get monthly target from branch array [name,prov,apr,may,jun,pcsup,region]
+// months: 3=Apr, 4=May, 5=Jun
+function getTarget(b,dateStr){
+  if(!b||!dateStr) return b?b[3]:0; // default May
+  var mo=new Date(dateStr).getMonth(); // 0-indexed
+  if(mo===3) return b[2]; // Apr
+  if(mo===4) return b[3]; // May
+  if(mo===5) return b[4]; // Jun
+  return b[3]; // default May
+}
+
+// ── Firebase Firestore (ES Module) ──────────────────────
+let SD=[];
+let _db=null;
+
+async function initFirebase(){
+  const { initializeApp } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js');
+  const { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, query, orderBy } = await import('https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js');
+
+  const app = initializeApp({
+    apiKey: "AIzaSyClQz6OGs5LcfM2m5M3H3SyJLcP_BxqVSQ",
+    authDomain: "sales-out-pc-all-store.firebaseapp.com",
+    projectId: "sales-out-pc-all-store",
+    storageBucket: "sales-out-pc-all-store.firebasestorage.app",
+    messagingSenderId: "81391410887",
+    appId: "1:81391410887:web:2cadbf037b97d4b73f28e2"
+  });
+  _db = getFirestore(app);
+
+  const q = query(collection(_db,'sales'), orderBy('d','asc'));
+  onSnapshot(q, function(snapshot){
+    SD = snapshot.docs.map(function(d){ var r=d.data(); r._id=d.id; return r; });
+    renderList();
+    var pg=document.querySelector('.pg.on');
+    if(pg&&pg.id==='pd') rd();
+    if(pg&&pg.id==='pt') rt();
+  }, function(err){
+    toast('⚠ เชื่อมต่อ Firebase ไม่ได้');
+    console.error(err);
+  });
+
+  window._fsAdd = (entry) => addDoc(collection(_db,'sales'), entry);
+  window._fsDel = (id) => deleteDoc(doc(_db,'sales',id));
+}
+
+async function sav(entry){
+  if(!window._fsAdd){ toast('⚠ ยังไม่ได้เชื่อมต่อ Firebase'); return false; }
+  try{ await window._fsAdd(entry); return true; }
+  catch(e){ toast('⚠ บันทึกไม่สำเร็จ'); console.error(e); return false; }
+}
+
+async function delFromDB(id){
+  if(!window._fsDel||!id) return;
+  try{ await window._fsDel(id); }
+  catch(e){ toast('⚠ ลบไม่สำเร็จ'); console.error(e); }
+}
+
+function fK(n){ n=Math.round(n||0); return n>=1e6?'฿'+(n/1e6).toFixed(1)+'M':'฿'+n.toLocaleString(); }
+
+// ── Chain → Branch cascade (ENTRY) ───────────────────
+function onCC(){
+  var ch=document.getElementById('sc').value;
+  var s=document.getElementById('sb');
+  s.innerHTML='<option value="">-- เลือกสาขา --</option>';
+  document.getElementById('branch-info').style.display='none';
+  if(ch && BRANCHES[ch]){
+    Object.keys(BRANCHES[ch]).forEach(function(bc){
+      var b=BRANCHES[ch][bc];
+      var o=document.createElement('option');
+      o.value=bc; o.textContent=b[0]+' ('+b[1]+')';
+      s.appendChild(o);
+    });
+  }
+}
+
+function onBranchChange(){
+  var ch=document.getElementById('sc').value;
+  var bc=document.getElementById('sb').value;
+  var info=document.getElementById('branch-info');
+  if(!ch||!bc){info.style.display='none';return;}
+  var b=getBranch(ch,bc);
+  if(!b){info.style.display='none';return;}
+  info.style.display='block';
+  var d=document.getElementById('idate').value;
+  document.getElementById('bi-target').textContent='฿'+getTarget(b,d).toLocaleString();
+  document.getElementById('bi-pc').textContent=b[5];
+  document.getElementById('bi-region').textContent=b[6];
+  document.getElementById('bi-province').textContent=b[1];
+  autoFillPC(ch,bc);
+}
+
+function autoFillPC(ch,bc){
+  var prev=null;
+  for(var i=SD.length-1;i>=0;i--){
+    if(SD[i].ch===ch&&SD[i].bc===bc){prev=SD[i];break;}
+  }
+  var hint=document.getElementById('pc-autofill-hint');
+  if(prev&&(prev.pc||prev.pcpromo)){
+    document.getElementById('ipc').value=prev.pc||0;
+    document.getElementById('ipcpromo').value=prev.pcpromo||0;
+    var d=new Date(prev.d);
+    var mo=d.toLocaleDateString('th-TH',{month:'long',year:'2-digit'});
+    hint.style.display='flex';
+    hint.innerHTML='<span style="font-size:11px;color:var(--gr);flex:1">📋 ดึงข้อมูล PC จาก '+mo+'</span>'+
+      '<button onclick="resetPC()" style="background:var(--rdl);color:var(--rd);border:none;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:600;cursor:pointer">Reset</button>';
+  } else {
+    hint.style.display='none';
+  }
+}
+
+function resetPC(){
+  document.getElementById('ipc').value='';
+  document.getElementById('ipcpromo').value='';
+  document.getElementById('pc-autofill-hint').style.display='none';
+}
+
+// ── Chain → Branch cascade (DASHBOARD) ───────────────
+function onDCC(){
+  var ch=document.getElementById('fc').value;
+  var s=document.getElementById('fbr');
+  s.innerHTML='<option value="">ทั้งหมด</option>';
+  if(ch && BRANCHES[ch]){
+    Object.keys(BRANCHES[ch]).forEach(function(bc){
+      var b=BRANCHES[ch][bc];
+      var o=document.createElement('option');
+      o.value=bc; o.textContent=b[0];
+      s.appendChild(o);
+    });
+  }
+  rd();
+}
+
+// ── Format brand inputs with commas ──────────────────
+function fmtInput(el){
+  var raw=el.value.replace(/,/g,'').replace(/[^\d]/g,'');
+  if(raw===''){el.value='';ct();return;}
+  var num=parseInt(raw,10);
+  if(isNaN(num)){el.value='';ct();return;}
+  el.value=num.toLocaleString();
+  ct();
+}
+
+// ── Running total ─────────────────────────────────────
+function ct(){
+  var t=0;
+  BRANDS.forEach(function(b){
+    var el=document.getElementById('b'+b);
+    if(el) t+=parseFloat(el.value.replace(/,/g,''))||0;
+  });
+  document.getElementById('tprev').textContent='฿ '+Math.round(t).toLocaleString();
+}
+
+// ── Save entry ────────────────────────────────────────
+var _pendingEntry=null;
+
+function saveE(){
+  var ch=document.getElementById('sc').value;
+  var bc=document.getElementById('sb').value;
+  var d=document.getElementById('idate').value;
+  if(!ch||!bc||!d){toast('⚠ กรุณาเลือกห้าง สาขา และวันที่');return;}
+  var bm=getBranch(ch,bc);
+  if(!bm){toast('⚠ ไม่พบข้อมูลสาขา');return;}
+  var bn=bm[0], pv=bm[1], tg=getTarget(bm,d), ps=bm[5], rg=bm[6];
+  var br={};var tot=0;
+  BRANDS.forEach(function(b){
+    var v=parseFloat(document.getElementById('b'+b).value.replace(/,/g,''))||0;
+    if(v>0) br[b]=v;
+    tot+=v;
+  });
+  if(tot===0){toast('⚠ กรุณากรอกยอดขายอย่างน้อย 1 แบรนด์');return;}
+  var pcCount=parseInt(document.getElementById('ipc').value)||0;
+  var pcPromo=parseInt(document.getElementById('ipcpromo').value)||0;
+
+  // Build pending entry
+  _pendingEntry={d:d,ch:ch,bc:bc,bn:bn,pv:pv,tg:tg,br:br,tot:tot,ps:ps,rg:rg,pc:pcCount,pcpromo:pcPromo};
+
+  // Beger-only sales for this entry
+  var begerToday=br['Beger']||0;
+
+  // Compute cumulative Beger sales for this branch from day 1 to selected day (same month)
+  var dt=new Date(d);
+  var dayN=dt.getDate();
+  var dim=new Date(dt.getFullYear(),dt.getMonth()+1,0).getDate();
+  var allSameBranch=SD.filter(function(e){
+    var ed=new Date(e.d);
+    return e.bc===bc&&ed.getMonth()===dt.getMonth()&&ed.getFullYear()===dt.getFullYear()&&ed.getDate()<=dayN;
+  });
+  var cumSoFar=allSameBranch.reduce(function(a,e){return a+((e.br&&e.br['Beger'])||0);},0)+begerToday;
+
+  // ACH% current (cumulative Beger vs target)
+  var pct=tg>0?Math.round(cumSoFar/tg*100):0;
+  var pctCol=pct>=100?'var(--ac)':pct>=70?'#f5a623':'#e74c3c';
+
+  // Forecast EOM
+  var forecast=dayN>0?Math.round(cumSoFar/dayN*dim):cumSoFar;
+  var achForecast=tg>0?Math.round(forecast/tg*100):0;
+  var achForecastCol=achForecast>=100?'var(--ac)':achForecast>=80?'#f5a623':'#e74c3c';
+
+  // MS for this branch today only (entry being added)
+  var sameDayBranch=SD.filter(function(e){return e.d===d&&e.bc===bc;});
+  var msMap={};
+  sameDayBranch.forEach(function(e){Object.keys(e.br).forEach(function(b){msMap[b]=(msMap[b]||0)+e.br[b];});});
+  Object.keys(br).forEach(function(b){msMap[b]=(msMap[b]||0)+br[b];});
+  var msTotal=Object.values(msMap).reduce(function(a,v){return a+v;},0);
+  var msArr=Object.entries(msMap).sort(function(a,b){return b[1]-a[1];});
+
+  // Fill modal header — แสดงยอด Beger วันนี้
+  var dateStr=new Date(d).toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('sm-branch').innerHTML=
+    '<div style="display:flex;justify-content:space-between;align-items:center">'+
+    '<div><div style="color:#fff;font-size:14px;font-weight:700">'+(bn||bc)+'</div>'+
+    '<div style="color:var(--ac3);font-size:11px;margin-top:2px">'+ch+' · '+pv+' · '+dateStr+'</div></div>'+
+    '<div style="text-align:right"><div style="color:var(--ac);font-size:18px;font-weight:700">'+fK(begerToday)+'</div>'+
+    '<div style="color:var(--ac3);font-size:10px">Beger วันนี้</div></div></div>';
+
+  var lbEl=document.getElementById('sm-today-label');
+  if(lbEl) lbEl.textContent='Beger สะสม 1–'+dayN+' '+new Date(d).toLocaleDateString('th-TH',{month:'short'});
+  document.getElementById('sm-today').textContent=fK(cumSoFar);
+  document.getElementById('sm-pct').innerHTML='<span style="color:'+pctCol+'">'+pct+'%</span>';
+  document.getElementById('sm-forecast').textContent=fK(forecast);
+  document.getElementById('sm-ach-forecast').innerHTML='<span style="color:'+achForecastCol+'">'+achForecast+'%</span>';
+
+  // ── Alert banner ──────────────────────────────────────
+  var alertEl=document.getElementById('sm-alert');
+  var warningMsgs=[
+    'ยอดนี้ยังน้อยไปนะ 💪 สู้ต่อได้เลย!',
+    'ยังมีเวลาเหลือ อย่าท้อแท้นะ! 🔥',
+    'ตอนนี้ยังต่ำกว่าเป้า ลุยให้หนักขึ้นได้เลย! 💥',
+    'โค้งนี้ต้องเร่งกันหน่อยแล้ว! ⚡'
+  ];
+  var congrats=[
+    'ยอดเยี่ยมมาก! คุณทำได้เกินเป้าแบบสวยงาม 🎉',
+    'เจ๋งมาก! ฝีมือระดับนี้ต้องชื่นชมเลย 🏆',
+    'สุดยอด! นี่คือผลลัพธ์ของความทุ่มเทจริงๆ 🌟',
+    'Outstanding! เป้านี้ไม่มีทางสู้คุณได้เลย 🚀'
+  ];
+  var rnd=function(arr){return arr[Math.floor(Math.random()*arr.length)];};
+
+  if(achForecast>=120){
+    alertEl.style.display='block';
+    alertEl.style.background='linear-gradient(135deg,rgba(52,210,122,0.18),rgba(52,210,122,0.08))';
+    alertEl.style.border='.5px solid rgba(52,210,122,0.4)';
+    alertEl.innerHTML=
+      '<div style="font-size:28px;margin-bottom:6px">🎊🏆🎉</div>'+
+      '<div style="color:#34d27a;font-size:14px;font-weight:700;margin-bottom:4px">ยอดคาดการณ์ '+achForecast+'% — เกินเป้าแบบสบายๆ!</div>'+
+      '<div style="color:#a8dfc0;font-size:12px">'+rnd(congrats)+'</div>';
+    launchConfetti();
+  } else if(achForecast<80){
+    alertEl.style.display='block';
+    alertEl.style.background='linear-gradient(135deg,rgba(231,76,60,0.15),rgba(231,76,60,0.06))';
+    alertEl.style.border='.5px solid rgba(231,76,60,0.35)';
+    alertEl.innerHTML=
+      '<div style="font-size:22px;margin-bottom:6px">⚠️</div>'+
+      '<div style="color:#e74c3c;font-size:13px;font-weight:700;margin-bottom:4px">คาดการณ์ ACH '+achForecast+'% — ต่ำกว่าเกณฑ์ 80%</div>'+
+      '<div style="color:#f0a098;font-size:12px">'+rnd(warningMsgs)+'</div>';
+  } else {
+    alertEl.style.display='none';
+  }
+
+  var MS_C=['#34d27a','#2d8653','#7ec8a0','#f5a623','#e67e22','#5eadd4','#9b8fd4','#5dc8b5','#e8845c'];
+  document.getElementById('sm-ms').innerHTML=msArr.slice(0,6).map(function(kv,i){
+    var pms=msTotal>0?(kv[1]/msTotal*100).toFixed(1):0;
+    var col=MS_C[i%MS_C.length];
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">'+
+      '<div style="color:#ccc;font-size:11px;width:70px;font-weight:'+(i===0?700:400)+';color:'+(i===0?'#fff':'#b0c4b8')+'">'+kv[0]+'</div>'+
+      '<div style="flex:1;background:rgba(255,255,255,0.07);border-radius:4px;height:6px;overflow:hidden">'+
+        '<div style="height:6px;border-radius:4px;background:'+col+';width:'+pms+'%"></div></div>'+
+      '<div style="color:'+col+';font-size:11px;font-weight:600;width:38px;text-align:right">'+pms+'%</div></div>';
+  }).join('');
+
+  document.getElementById('sm-brands').innerHTML=Object.entries(br).map(function(kv){
+    var pms=tot>0?(kv[1]/tot*100).toFixed(1):0;
+    return '<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:.5px solid rgba(255,255,255,0.05)">'+
+      '<span style="color:#b0c4b8;font-size:12px">'+kv[0]+'</span>'+
+      '<span style="color:#fff;font-size:12px;font-weight:600">'+fK(kv[1])+'<span style="color:var(--ac3);font-size:10px;margin-left:5px">'+pms+'%</span></span></div>';
+  }).join('');
+
+  // Show modal
+  var m=document.getElementById('save-modal');
+  m.style.display='flex';
+  setTimeout(function(){m.querySelector('div').style.transform='translateY(0)';},10);
+}
+
+function launchConfetti(){
+  var cv=document.getElementById('confetti-canvas');
+  cv.style.display='block';
+  cv.width=window.innerWidth; cv.height=window.innerHeight;
+  var ctx=cv.getContext('2d');
+  var parts=[];
+  var cols=['#34d27a','#f5a623','#fff','#a8dfc0','#ffd700','#7ec8a0','#ffec3d'];
+  for(var i=0;i<130;i++){
+    parts.push({
+      x:Math.random()*cv.width, y:Math.random()*cv.height-cv.height,
+      w:6+Math.random()*8, h:8+Math.random()*12,
+      col:cols[Math.floor(Math.random()*cols.length)],
+      vx:(Math.random()-0.5)*3, vy:2+Math.random()*4,
+      rot:Math.random()*360, vr:(Math.random()-0.5)*6, op:1
+    });
+  }
+  var frames=0;
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    parts.forEach(function(p){
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+      ctx.globalAlpha=p.op;ctx.fillStyle=p.col;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore();
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      if(frames>60) p.op-=0.012;
+    });
+    frames++;
+    if(frames<160) requestAnimationFrame(draw);
+    else{ctx.clearRect(0,0,cv.width,cv.height);cv.style.display='none';}
+  }
+  draw();
+}
+
+function closeSaveModal(){
+  document.getElementById('save-modal').style.display='none';
+  _pendingEntry=null;
+}
+
+async function confirmSave(){
+  if(!_pendingEntry)return;
+  var entry=_pendingEntry;
+  _pendingEntry=null;
+  var ok=await sav(entry);
+  if(!ok) return;
+  BRANDS.forEach(function(b){document.getElementById('b'+b).value='';});
+  document.getElementById('ipc').value='';
+  document.getElementById('ipcpromo').value='';
+  document.getElementById('tprev').textContent='฿ 0';
+  document.getElementById('sc').value='';
+  document.getElementById('sb').innerHTML='<option value="">-- เลือกสาขา (เลือกห้างก่อน) --</option>';
+  document.getElementById('branch-info').style.display='none';
+  document.getElementById('save-modal').style.display='none';
+  renderList();
+  toast('✓ บันทึกเรียบร้อย');
+}
+
+// ── Render recent list ────────────────────────────────
+function renderList(){
+  var w=document.getElementById('elist');
+  var rec=SD.slice().reverse().slice(0,15);
+  if(!rec.length){w.innerHTML='<div style="color:var(--tx3);text-align:center;padding:20px;font-size:13px">ยังไม่มีข้อมูล</div>';return;}
+  w.innerHTML=rec.map(function(e,i){
+    var ri=SD.length-1-i;
+    var ds=new Date(e.d).toLocaleDateString('th-TH',{day:'numeric',month:'short'});
+    var pct=e.tg>0?Math.round(e.tot/e.tg*100):0;
+    var badgeBg=pct>=100?'#dcfce7':pct>=70?'#fef9c3':'#fee2e2';
+    var badgeTx=pct>=100?'#15803d':pct>=70?'#a16207':'#b91c1c';
+    return '<div style="display:flex;align-items:center;gap:12px;padding:13px 14px;background:#fff;border-radius:12px;border:.5px solid #e5e7eb;margin-bottom:8px">'+
+      '<div style="width:52px;height:52px;border-radius:10px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0">🏬</div>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:14px;font-weight:700;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(e.bn||e.ch)+'</div>'+
+        '<div style="font-size:11px;color:#9ca3af;margin-top:1px">'+e.ch+' · '+ds+(e.pc?'&nbsp;·&nbsp;PC '+e.pc+'คน':'')+(e.pcpromo?' (Promo '+e.pcpromo+')':'')+'</div>'+
+        '<span style="display:inline-block;margin-top:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;background:'+badgeBg+';color:'+badgeTx+'">'+pct+'% of target</span>'+
+      '</div>'+
+      '<div style="text-align:right;flex-shrink:0">'+
+        '<div style="font-size:14px;font-weight:700;color:#1a5c3a">'+fK(e.tot)+'</div>'+
+        '<div style="font-size:11px;color:#9ca3af;margin-top:1px">เป้า '+fK(e.tg)+'</div>'+
+      '</div>'+
+      '<button onclick="delE('+ri+')" style="background:none;border:none;color:#d1d5db;font-size:20px;cursor:pointer;flex-shrink:0;padding:2px 4px;line-height:1">×</button>'+
+    '</div>';
+  }).join('');
+  var ts=SD.filter(function(e){return e.d===new Date().toISOString().split('T')[0];}).reduce(function(a,b){return a+b.tot;},0);
+  document.getElementById('htot').innerHTML='วันนี้<br>'+fK(ts);
+}
+
+function delE(i){
+  if(!confirm('ลบรายการนี้?'))return;
+  var rec=SD.slice().reverse()[i];
+  if(rec&&rec._id){ delFromDB(rec._id); toast('ลบแล้ว'); }
+}
+
+// ── Dashboard ─────────────────────────────────────────
+var cS=null,cD=null,cW=null,cP=null,cTr=null,cChain=null;
+
+function getF(){
+  var mo=document.getElementById('fm').value;
+  var ch=document.getElementById('fc').value;
+  var br=document.getElementById('fbr').value;
+  var ps=document.getElementById('fps').value;
+  return SD.filter(function(e){
+    if(mo!==''&&new Date(e.d).getMonth()!==parseInt(mo)) return false;
+    if(ch&&e.ch!==ch) return false;
+    if(br&&e.bc!==br) return false;
+    if(ps&&e.ps!==ps) return false;
+    return true;
+  });
+}
+
+function dc(c){ if(c){try{c.destroy();}catch(e){}} return null; }
+
+function populatePcSup(){
+  var sel=document.getElementById('fps');
+  var cur=sel.value;
+  var names=[...new Set(SD.map(function(e){return e.ps||'';}).filter(Boolean))].sort();
+  sel.innerHTML='<option value="">ทั้งหมด</option>';
+  names.forEach(function(n){
+    var o=document.createElement('option');
+    o.value=n;o.textContent=n;if(n===cur)o.selected=true;
+    sel.appendChild(o);
+  });
+}
+
+function rd(){
+  cS=null;cD=dc(cD);cW=dc(cW);cP=dc(cP);cTr=dc(cTr);
+  populatePcSup();
+  var data=getF();
+  var empty='<div style="color:var(--tx3);text-align:center;padding:14px;font-size:12px">ไม่มีข้อมูล</div>';
+
+  ['k1','k2','k4','k5'].forEach(function(id){document.getElementById(id).textContent='฿0';});
+  document.getElementById('k3').textContent='0%';
+  document.getElementById('k3').className='mv';
+  document.getElementById('kb').style.width='0%';
+  document.getElementById('k5s').textContent='';
+  document.getElementById('k5pct').textContent='0%';
+  document.getElementById('k5pct').className='mv g';
+  document.getElementById('k5bar').style.width='0%';
+  var _sleg=document.getElementById('sleg');if(_sleg)_sleg.innerHTML='';
+  document.getElementById('p-best').textContent='';
+
+  if(!data.length){document.getElementById('brank').innerHTML=empty;return;}
+
+  var totS=data.reduce(function(a,b){return a+((b.br&&b.br['Beger'])||0);},0);
+  var totT=data.reduce(function(a,b){return a+b.tg;},0);
+  var days=[...new Set(data.map(function(e){return e.d;}))].length;
+  var avg=days>0?totS/days:0;
+  var pct=totT>0?totS/totT*100:0;
+  var fore=avg*30;
+
+  document.getElementById('k1').textContent=fK(totS);
+  document.getElementById('k2').textContent=fK(totT);
+  var k3=document.getElementById('k3');
+  k3.textContent=pct.toFixed(1)+'%';
+  k3.className='mv '+(pct>=100?'g':pct>=70?'a':'r');
+  var bar=document.getElementById('kb');
+  bar.style.width=Math.min(pct,100)+'%';
+  bar.className='pf'+(pct>100?' ov':'');
+  document.getElementById('k4').textContent=fK(avg);
+  document.getElementById('k5').textContent=fK(fore);
+  var forePct=totT>0?(fore/totT*100):0;
+  document.getElementById('k5pct').textContent=forePct.toFixed(1)+'%';
+  document.getElementById('k5pct').className='mv '+(forePct>=100?'g':forePct>=70?'a':'r');
+  document.getElementById('k5bar').style.width=Math.min(forePct,100)+'%';
+  document.getElementById('k5bar').className='pf'+(forePct>100?' ov':'');
+  document.getElementById('k5s').textContent=forePct>=100?'✓ คาดว่าจะปิดเป้าได้':'ยังขาดอีก '+fK(totT-fore)+' จากเป้า';
+
+  var p1=0,p2=0,p3=0;
+  data.forEach(function(e){var x=new Date(e.d).getDate();var v=(e.br&&e.br['Beger'])||0;if(x<=10)p1+=v;else if(x<=20)p2+=v;else p3+=v;});
+  var maxP=Math.max(p1,p2,p3);
+  var bestLabel=maxP===p1?'10 วันแรก':maxP===p2?'10 วันกลาง':'10 วันสุดท้าย';
+  document.getElementById('p-best').textContent=maxP>0?'🏆 '+bestLabel+' ขายดีที่สุด ('+fK(maxP)+')':'';
+
+  var bt={};BRANDS.forEach(function(b){bt[b]=0;});
+  data.forEach(function(e){if(e.br)Object.keys(e.br).forEach(function(b){if(bt[b]!==undefined)bt[b]+=e.br[b];});});
+  var ab=BRANDS.filter(function(b){return bt[b]>0;}).sort(function(a,b){return bt[b]-bt[a];});
+
+  if(typeof Chart==='undefined'){
+    document.getElementById('brank').innerHTML='<div style="color:var(--tx3);font-size:12px;text-align:center;padding:12px">⏳ กำลังโหลด Chart.js...</div>';
+    setTimeout(rd,800);return;
+  }
+
+  // ── Brand palette (unified green-forest theme) ────────
+  var MS_COLS=[
+    '#34d27a','#2d8653','#7ec8a0','#a8dfc0',
+    '#f5a623','#e67e22','#d4750b',
+    '#5eadd4','#2980b9','#1a6fa8',
+    '#9b8fd4','#8e44ad',
+    '#5dc8b5','#16a085',
+    '#e8845c','#c0392b',
+    '#bec3c7'
+  ];
+
+  // ── Market Share Table (unified dark card) ────────────
+  var msHtml='';
+  ab.forEach(function(b,i){
+    var ms=totS>0?(bt[b]/totS*100):0;
+    var barW=ab.length>0&&bt[ab[0]]>0?(bt[b]/bt[ab[0]]*100):0;
+    var isFirst=i===0;
+    var col=MS_COLS[i%MS_COLS.length];
+    msHtml+=
+      '<div style="display:grid;grid-template-columns:18px 1fr 52px;align-items:center;gap:0;padding:7px 2px;border-top:.5px solid rgba(255,255,255,0.06)">'+
+        '<div style="font-size:10px;font-weight:700;color:'+(isFirst?'var(--ac)':'rgba(255,255,255,0.3)')+'">'+( isFirst?'①':i+1)+'</div>'+
+        '<div>'+
+          '<div style="display:flex;align-items:center;gap:5px">'+
+            '<span style="width:7px;height:7px;border-radius:2px;background:'+col+';flex-shrink:0;display:inline-block"></span>'+
+            '<span style="color:'+(isFirst?'#fff':'#b0c4b8')+';font-size:11px;font-weight:'+(isFirst?700:500)+'">'+b+'</span>'+
+          '</div>'+
+          '<div style="background:rgba(255,255,255,0.07);border-radius:3px;height:3px;margin-top:4px;overflow:hidden">'+
+            '<div style="height:3px;border-radius:3px;background:'+col+';width:'+barW.toFixed(0)+'%;opacity:'+(isFirst?1:0.7)+'"></div>'+
+          '</div>'+
+        '</div>'+
+        '<div style="color:'+(isFirst?'var(--ac)':'#7ea890')+';font-size:12px;font-weight:'+(isFirst?700:500)+';text-align:right">'+ms.toFixed(1)+'%</div>'+
+      '</div>';
+  });
+  document.getElementById('ms-table').innerHTML=msHtml||'<div style="color:rgba(255,255,255,0.3);font-size:12px;padding:12px 0">ไม่มีข้อมูล</div>';
+
+  // ── Donut chart ───────────────────────────────────────
+  var cDonut=document.getElementById('cdonut');
+  if(cDonut && ab.length>0 && typeof Chart!=='undefined'){
+    var existDonut=Chart.getChart(cDonut);if(existDonut)existDonut.destroy();
+    var donutData=ab.slice(0,7).map(function(b){return bt[b];});
+    var donutLabels=ab.slice(0,7);
+    var donutCols=ab.slice(0,7).map(function(b,i){return MS_COLS[i%MS_COLS.length];});
+    new Chart(cDonut.getContext('2d'),{
+      type:'doughnut',
+      data:{labels:donutLabels,datasets:[{data:donutData,backgroundColor:donutCols,borderColor:Array(donutData.length).fill('#1e3d2a'),borderWidth:2,hoverOffset:6}]},
+      options:{
+        responsive:true,maintainAspectRatio:false,cutout:'62%',
+        plugins:{
+          legend:{display:false},
+          tooltip:{callbacks:{label:function(ctx){
+            var ms=totS>0?(ctx.raw/totS*100).toFixed(1):0;
+            return ' '+ctx.label+': '+ms+'%';
+          }}}
+        }
+      }
+    });
+    // update center text: Beger share
+    var begerMs=totS>0&&bt['Beger']?(bt['Beger']/totS*100).toFixed(1):'-';
+    var dpct=document.getElementById('donut-pct');
+    if(dpct)dpct.textContent=begerMs+'%';
+  }
+
+  // ── Build byD (used by Trend chart) ──────────────────
+  var byD={};
+  data.forEach(function(e){
+    if(!byD[e.d])byD[e.d]={s:0,t:0};
+    byD[e.d].s+=(e.br&&e.br['Beger'])||0;
+    byD[e.d].t+=e.tg;
+  });
+  var sD=Object.keys(byD).sort();
+  var dlbl=sD.map(function(d){var dt=new Date(d);return dt.getDate()+'/'+(dt.getMonth()+1);});
+
+  // ── Daily bar + target line ───────────────────────────
+  // ── 10-day period horizontal bar ──────────────────────
+  cP=new Chart(document.getElementById('cp').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['10 วันสุดท้าย (21–31)','10 วันกลาง (11–20)','10 วันแรก (1–10)'],
+      datasets:[{
+        data:[p3,p2,p1],
+        backgroundColor:[
+          p3===maxP&&maxP>0?'#f5a623':'#34d27a',
+          p2===maxP&&maxP>0?'#f5a623':'#34d27a',
+          p1===maxP&&maxP>0?'#f5a623':'#34d27a'
+        ],
+        borderRadius:4,borderSkipped:false
+      }]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ' '+fK(ctx.raw);}}}},
+      scales:{
+        x:{ticks:{font:{size:9},callback:function(v){return fK(v);}},grid:{color:'rgba(0,0,0,0.05)'}},
+        y:{ticks:{font:{size:10}},grid:{display:false}}
+      }
+    }
+  });
+
+  // ── Trend cumulative line (unified green theme) ───────
+  var cumS=0,cumT=0,cumSales=[],cumTgt=[];
+  sD.forEach(function(d){cumS+=byD[d].s;cumT+=byD[d].t;cumSales.push(Math.round(cumS));cumTgt.push(Math.round(cumT));});
+  var dlblTr=sD.map(function(d){return new Date(d).getDate();});
+  cTr=new Chart(document.getElementById('ctr').getContext('2d'),{
+    type:'line',
+    data:{labels:dlblTr,datasets:[
+      {label:'ยอดขายสะสม',data:cumSales,
+        borderColor:'#34d27a',
+        backgroundColor:'rgba(52,210,122,0.12)',
+        borderWidth:2.5,
+        pointRadius:3.5,pointBackgroundColor:'#34d27a',pointBorderColor:'#1e3d2a',pointBorderWidth:2,
+        fill:true,tension:.35},
+      {label:'เป้าสะสม',data:cumTgt,
+        borderColor:'rgba(168,223,192,0.35)',
+        borderWidth:1.5,borderDash:[5,4],
+        pointRadius:0,fill:false,tension:.1}
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{
+          ticks:{color:'#7ea890',font:{size:9},autoSkip:true,maxTicksLimit:16},
+          grid:{color:'rgba(52,210,122,0.06)'},
+          border:{color:'rgba(52,210,122,0.1)'}
+        },
+        y:{
+          ticks:{color:'#7ea890',font:{size:9},callback:function(v){return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':v;}},
+          grid:{color:'rgba(52,210,122,0.06)'},
+          border:{color:'rgba(52,210,122,0.1)'}
+        }
+      }
+    }
+  });
+
+  // ── Day of week bar ───────────────────────────────────
+  var dT=[0,0,0,0,0,0,0],dC=[0,0,0,0,0,0,0];
+  data.forEach(function(e){var dw=new Date(e.d).getDay();var idx=dw===0?6:dw-1;dT[idx]+=(e.br&&e.br['Beger'])||0;dC[idx]++;});
+  var dA=dT.map(function(t,i){return dC[i]>0?Math.round(t/dC[i]):0;});
+  var maxDow=Math.max.apply(null,dA);
+  cW=new Chart(document.getElementById('cw2').getContext('2d'),{
+    type:'bar',
+    data:{labels:DOW,datasets:[{label:'เฉลี่ย',data:dA,backgroundColor:dA.map(function(v){return v===maxDow&&v>0?'#f5a623':'#34d27a';}),borderRadius:4,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:11}},grid:{display:false}},y:{ticks:{font:{size:9},callback:function(v){return fK(v);}},grid:{color:'rgba(0,0,0,0.05)'}}}}
+  });
+
+  // ── Chain comparison horizontal bar (Beger only) ──────
+  var CHAINS=['Homepro','Thai Watsadu','Global House','Megahome','DoHome','DoHome Togo','HomeHub','บุญถาวร','ฮาร์ดแวร์เฮ้าส์','โฮมบุญ','โฮมเพ้นท์','ศิริมหาชัย','Homeshop'];
+  var chData={};
+  CHAINS.forEach(function(c){chData[c]={s:0,t:0,days:new Set()};});
+  data.forEach(function(e){
+    if(chData[e.ch]){
+      var begerSales=(e.br&&e.br['Beger'])?e.br['Beger']:0;
+      chData[e.ch].s+=begerSales;
+      chData[e.ch].t+=e.tg;
+      chData[e.ch].days.add(e.d);
+    }
+  });
+  var activeCh=CHAINS.filter(function(c){return chData[c]!==undefined;});
+
+  // compute forecast per chain: avg/day * 30
+  activeCh.forEach(function(c){
+    var d=chData[c];
+    var nDays=d.days.size||1;
+    d.fore=Math.round((d.s/nDays)*30);
+    d.forePct=d.t>0?(d.fore/d.t*100):0;
+    d.achPct=d.t>0?(d.s/d.t*100):0;
+  });
+
+  // ── Chain comparison compact list ────────────────────
+  var chainSummaryHtml=
+    // Header row
+    '<div style="display:grid;grid-template-columns:1fr 52px 44px;gap:0;padding:0 2px 7px;border-bottom:.5px solid rgba(255,255,255,0.08);margin-bottom:6px">'+
+      '<div style="color:rgba(255,255,255,0.3);font-size:9px;font-weight:600;letter-spacing:.5px">ห้าง</div>'+
+      '<div style="color:rgba(255,255,255,0.3);font-size:9px;font-weight:600;text-align:right">Beger</div>'+
+      '<div style="color:rgba(255,255,255,0.3);font-size:9px;font-weight:600;text-align:right">ACH%</div>'+
+    '</div>'+
+    activeCh.map(function(c){
+      var d=chData[c];
+      var ach=d.achPct;
+      var barW=Math.min(ach,100).toFixed(1);
+      var barCol=ach>=100?'#34d27a':ach>=70?'#f5a623':'#e74c3c';
+      var achCol=ach>=100?'#34d27a':ach>=70?'#f5a623':'#e74c3c';
+      var achBg=ach>=100?'rgba(52,210,122,0.15)':ach>=70?'rgba(245,166,35,0.15)':'rgba(231,76,60,0.12)';
+      var hasData=d.s>0;
+      return '<div style="padding:6px 2px;border-bottom:.5px solid rgba(255,255,255,0.05)">'+
+        '<div style="display:grid;grid-template-columns:1fr 52px 44px;gap:0;align-items:center;margin-bottom:4px">'+
+          '<div style="font-size:12px;font-weight:600;color:'+(hasData?'#fff':'#555')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c+'</div>'+
+          '<div style="font-size:11px;font-weight:700;color:'+(hasData?'#7ec8a0':'#555')+';text-align:right">'+fK(d.s)+'</div>'+
+          '<div style="text-align:right">'+
+            '<span style="font-size:11px;font-weight:700;color:'+achCol+';background:'+achBg+';padding:1px 6px;border-radius:10px">'+
+              (hasData?ach.toFixed(0)+'%':'–')+
+            '</span>'+
+          '</div>'+
+        '</div>'+
+        '<div style="background:rgba(255,255,255,0.07);border-radius:3px;height:3px;overflow:hidden">'+
+          '<div style="height:3px;border-radius:3px;width:'+barW+'%;background:'+barCol+';transition:width .4s"></div>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+
+  document.getElementById('chain-summary').innerHTML=chainSummaryHtml;
+
+  // ── Brand ranking ─────────────────────────────────────
+  if(!ab.length){document.getElementById('brank').innerHTML=empty;return;}
+  var maxB=bt[ab[0]];
+  document.getElementById('brank').innerHTML=ab.slice(0,8).map(function(b,i){
+    var pf=maxB>0?bt[b]/maxB*100:0;
+    var ms=totS>0?(bt[b]/totS*100).toFixed(1):0;
+    return '<div class="rr"><div class="rn'+(i===0?' gd':'')+'">'+( i+1)+'</div><div class="rb"><div class="rl">'+b+'</div><div class="rbg"><div class="rbf" style="width:'+pf+'%;background:'+COLS[i]+'"></div></div></div><div class="rv">'+fK(bt[b])+'<small>MS '+ms+'%</small></div></div>';
+  }).join('');
+}
+
+// ── Export ────────────────────────────────────────────
+function doExport(){
+  if(!SD.length){toast('⚠ ไม่มีข้อมูล');return;}
+  if(typeof XLSX==='undefined'){toast('⚠ กำลังโหลด กรุณารอสักครู่');return;}
+  var MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var rows=SD.map(function(e){
+    var dt=new Date(e.d);
+    var r={'PC Sup':e.ps||'','รหัสห้าง':e.bc||'','Name':e.ch||'','สาขา':e.bn||'',
+      'Month':MN[dt.getMonth()],'Year':dt.getFullYear(),'เป้าการขาย':e.tg||0,
+      'วันที่':dt.getDate(),'ภูมิภาค':e.rg||''};
+    BRANDS.forEach(function(b){r[b]=(e.br&&e.br[b])||0;});
+    r[' Total ']=e.tot||0;
+    return r;
+  });
+  var ws=XLSX.utils.json_to_sheet(rows);
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Sales Data');
+  XLSX.writeFile(wb,'Sales_'+new Date().toISOString().split('T')[0]+'.xlsx');
+  toast('✓ Export สำเร็จ');
+}
+
+// ── Tab switch ────────────────────────────────────────
+function go(t){
+  document.getElementById('pe').classList.toggle('on',t==='e');
+  document.getElementById('pd').classList.toggle('on',t==='d');
+  document.getElementById('pt').classList.toggle('on',t==='t');
+  document.getElementById('te').classList.toggle('on',t==='e');
+  document.getElementById('td').classList.toggle('on',t==='d');
+  document.getElementById('tt').classList.toggle('on',t==='t');
+  if(t==='d') rd();
+  if(t==='t') rt();
+}
+
+// ── Branch Table ──────────────────────────────────────
+function getTF(){
+  var mo=document.getElementById('tm').value;
+  var ch=document.getElementById('tc').value;
+  var ps=document.getElementById('tps').value;
+  return SD.filter(function(e){
+    if(mo!==''&&new Date(e.d).getMonth()!==parseInt(mo)) return false;
+    if(ch&&e.ch!==ch) return false;
+    if(ps&&e.ps!==ps) return false;
+    return true;
+  });
+}
+
+function rt(){
+  // populate PC Sup filter
+  var tpsSel=document.getElementById('tps');
+  var curPs=tpsSel.value;
+  var allPs=[...new Set(SD.map(function(e){return e.ps||'';}).filter(Boolean))].sort();
+  tpsSel.innerHTML='<option value="">ทั้งหมด</option>';
+  allPs.forEach(function(n){var o=document.createElement('option');o.value=n;o.textContent=n;if(n===curPs)o.selected=true;tpsSel.appendChild(o);});
+
+  var data=getTF();
+  var wrap=document.getElementById('btable');
+  if(!data.length){wrap.innerHTML='<div style="color:#aaa;text-align:center;padding:24px;font-size:13px">ไม่มีข้อมูล</div>';document.getElementById('tsum').innerHTML='';return;}
+
+  // Aggregate by branch — track unique days for avg/day forecast
+  var byB={};
+  data.forEach(function(e){
+    if(!byB[e.bc]){
+      byB[e.bc]={bn:e.bn,ch:e.ch,bc:e.bc,ps:e.ps,rg:e.rg,tg:e.tg,tot:0,br:{},days:new Set(),pc:0};
+    }
+    byB[e.bc].tot+=e.tot;
+    byB[e.bc].days.add(e.d);
+    if(e.pc) byB[e.bc].pc=e.pc; // take latest pc value
+    if(e.br) Object.keys(e.br).forEach(function(b){byB[e.bc].br[b]=(byB[e.bc].br[b]||0)+e.br[b];});
+  });
+
+  var rows=Object.values(byB).sort(function(a,b){
+    var pa=a.tg>0?a.tot/a.tg:0, pb=b.tg>0?b.tot/b.tg:0;
+    return pb-pa;
+  });
+
+  // Summary strip
+  var totAll=rows.reduce(function(a,b){return a+b.tot;},0);
+  var tgtAll=rows.reduce(function(a,b){return a+b.tg;},0);
+  var achAll=tgtAll>0?(totAll/tgtAll*100):0;
+  var above=rows.filter(function(r){return r.tg>0&&r.tot/r.tg>=1;}).length;
+  var foreAll=rows.reduce(function(a,r){var nDays=r.days.size||1;return a+(r.tot/nDays*30);},0);
+  var forePctAll=tgtAll>0?(foreAll/tgtAll*100):0;
+  var foreCol=forePctAll>=100?'#4ade80':forePctAll>=70?'#fbbf24':'#f87171';
+  // Brand MS% — top brand by share
+  var btAll={};BRANDS.forEach(function(b){btAll[b]=0;});
+  data.forEach(function(e){if(e.br)Object.keys(e.br).forEach(function(b){if(btAll[b]!==undefined)btAll[b]+=e.br[b];});});
+  var abAll=BRANDS.filter(function(b){return btAll[b]>0;}).sort(function(a,b){return btAll[b]-btAll[a];});
+  var topBrand=abAll.length?abAll[0]:'';
+  var topMs=totAll>0&&topBrand?(btAll[topBrand]/totAll*100):0;
+  var achCol=achAll>=100?'#4ade80':achAll>=70?'#fbbf24':'#f87171';
+  document.getElementById('tsum').innerHTML=
+    '<div style="background:#1a5c3a;border-radius:8px;padding:8px 12px;flex-shrink:0;min-width:110px">'+
+      '<div style="color:#aaa;font-size:9px">ยอดรวม / ACH%</div>'+
+      '<div style="color:#4ade80;font-size:14px;font-weight:700">'+fK(totAll)+'</div>'+
+      '<div style="color:'+achCol+';font-size:11px;font-weight:700">'+achAll.toFixed(1)+'%</div>'+
+    '</div>'+
+    '<div style="background:#1a3a28;border-radius:8px;padding:8px 12px;flex-shrink:0;min-width:90px"><div style="color:#aaa;font-size:9px">สาขาถึงเป้า</div><div style="color:#4ade80;font-size:14px;font-weight:700">'+above+'/'+rows.length+'</div></div>'+
+    '<div style="background:#1a3a28;border-radius:8px;padding:8px 12px;flex-shrink:0;min-width:100px">'+
+      '<div style="color:#7ec8e3;font-size:9px">Beger MS%</div>'+
+      '<div style="color:#fff;font-size:12px;font-weight:700;margin-top:1px">Beger</div>'+
+      '<div style="color:'+(totAll>0&&btAll['Beger']?(btAll['Beger']/totAll*100)>=40?'#4ade80':(btAll['Beger']/totAll*100)>=25?'#fbbf24':'#f87171':'#aaa')+';font-size:13px;font-weight:700">'+(totAll>0?(btAll['Beger']/totAll*100).toFixed(1):'0.0')+'%</div>'+
+    '</div>'+
+    '<div style="background:#1a3a28;border-radius:8px;padding:8px 12px;flex-shrink:0;min-width:110px"><div style="color:#fbbf24;font-size:9px">คาดการณ์สิ้นเดือน</div><div style="color:'+foreCol+';font-size:14px;font-weight:700">'+fK(foreAll)+'</div><div style="color:'+foreCol+';font-size:10px;font-weight:600">'+forePctAll.toFixed(1)+'%</div></div>';
+
+  // PC count per branch (unique)
+  wrap.innerHTML=rows.map(function(r,i){
+    var pct=r.tg>0?(r.tot/r.tg*100):0;
+    var nDays=r.days.size||1;
+    var avgDay=r.tot/nDays;
+    var fore=avgDay*30;
+    var forePct=r.tg>0?(fore/r.tg*100):0;
+    var begerMs=r.tot>0&&r.br['Beger']?(r.br['Beger']/r.tot*100):0;
+    var msCls=begerMs>=40?'#4ade80':begerMs>=25?'#fbbf24':'#f87171';
+    var cls=pct>=100?'hi':pct>=70?'md':'lo';
+    var fcls=forePct>=100?'#4ade80':forePct>=70?'#fbbf24':'#f87171';
+    var bar=Math.min(pct,100).toFixed(0);
+    return '<div class="brow" onclick="showBranch(\''+r.bc+'\',\''+r.ch+'\')" style="position:relative;overflow:hidden">'+
+      '<div style="position:absolute;left:0;top:0;bottom:0;width:'+bar+'%;background:rgba(74,222,128,0.06);pointer-events:none"></div>'+
+      '<div class="bn">'+r.bn+'</div>'+
+      '<div class="bpc" style="color:#6ee7b7">'+( r.pc||'-')+'</div>'+
+      '<div class="bv">'+fK(r.tot)+'</div>'+
+      '<div class="bpct '+cls+'">'+pct.toFixed(1)+'%</div>'+
+      '<div style="font-size:11px;font-weight:700;text-align:right;color:'+msCls+'">'+begerMs.toFixed(1)+'%</div>'+
+      '<div style="font-size:10px;font-weight:700;text-align:right;color:'+fcls+'">'+fK(fore)+'</div>'+
+      '<div style="font-size:11px;font-weight:700;text-align:right;color:'+fcls+'">'+forePct.toFixed(0)+'%</div>'+
+    '</div>';
+  }).join('');
+}
+
+function showBranch(bc,ch){
+  var data=getTF().filter(function(e){return e.bc===bc&&e.ch===ch;});
+  if(!data.length) return;
+  var r=data[0];
+  var totSales=data.reduce(function(a,b){return a+b.tot;},0);
+  var pct=r.tg>0?(totSales/r.tg*100):0;
+  var pctCol=pct>=100?'var(--gr2)':pct>=70?'var(--am)':'var(--rd)';
+
+  // Brand breakdown
+  var br={};BRANDS.forEach(function(b){br[b]=0;});
+  data.forEach(function(e){if(e.br)Object.keys(e.br).forEach(function(b){if(br[b]!==undefined)br[b]+=e.br[b];});});
+  var ab=BRANDS.filter(function(b){return br[b]>0;}).sort(function(a,b){return br[b]-br[a];});
+
+  document.getElementById('modal-title').textContent=r.bn;
+
+  var html=
+    // KPI row
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">'+
+      '<div class="mcard" style="text-align:center"><div style="font-size:10px;color:var(--tx3)">ยอดขาย</div><div style="font-size:16px;font-weight:700;color:var(--gr2)">'+fK(totSales)+'</div></div>'+
+      '<div class="mcard" style="text-align:center"><div style="font-size:10px;color:var(--tx3)">เป้า</div><div style="font-size:16px;font-weight:700">'+fK(r.tg)+'</div></div>'+
+      '<div class="mcard" style="text-align:center"><div style="font-size:10px;color:var(--tx3)">ACH%</div><div style="font-size:16px;font-weight:700;color:'+pctCol+'">'+pct.toFixed(1)+'%</div></div>'+
+    '</div>'+
+    // Progress
+    '<div style="background:var(--bg);border-radius:6px;height:8px;margin-bottom:14px;overflow:hidden"><div style="height:100%;border-radius:6px;width:'+Math.min(pct,100)+'%;background:'+(pct>=100?'var(--gr2)':pct>=70?'var(--am)':'var(--rd)')+'"></div></div>'+
+    // Info
+    '<div class="mcard">'+
+      '<div class="mrow"><span class="mk">เชน</span><span class="mv2">'+r.ch+'</span></div>'+
+      '<div class="mrow"><span class="mk">PC Sup</span><span class="mv2">'+(r.ps||'-')+'</span></div>'+
+      '<div class="mrow"><span class="mk">จำนวน PC</span><span class="mv2">'+(r.pc!=null?r.pc+' คน':'-')+'</span></div>'+
+      '<div class="mrow"><span class="mk">PC Promotion</span><span class="mv2">'+(r.pcpromo!=null&&r.pcpromo>0?r.pcpromo+' คน':'-')+'</span></div>'+
+      '<div class="mrow"><span class="mk">ภูมิภาค</span><span class="mv2">'+(r.rg||'-')+'</span></div>'+
+      '<div class="mrow"><span class="mk">จำนวนวันที่บันทึก</span><span class="mv2">'+data.length+' วัน</span></div>'+
+    '</div>'+
+    // Brand breakdown
+    '<div style="font-size:11px;font-weight:600;color:var(--tx2);margin:12px 0 6px">ยอดขายแยกแบรนด์</div>'+
+    '<div class="mcard" style="padding:8px 11px">'+
+    ab.map(function(b,i){
+      var pf=ab.length>0&&br[ab[0]]>0?br[b]/br[ab[0]]*100:0;
+      var ms=totSales>0?(br[b]/totSales*100).toFixed(1):0;
+      return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:.5px solid var(--bd)">'+
+        '<div style="width:8px;height:8px;border-radius:2px;background:'+COLS[i%COLS.length]+';flex-shrink:0"></div>'+
+        '<div style="flex:1;font-size:12px;font-weight:500">'+b+'</div>'+
+        '<div style="font-size:11px;color:var(--tx3);margin-right:4px">'+ms+'%</div>'+
+        '<div style="font-size:12px;font-weight:600">'+fK(br[b])+'</div>'+
+      '</div>';
+    }).join('')+
+    '</div>'+
+    // Daily list
+    '<div style="font-size:11px;font-weight:600;color:var(--tx2);margin:12px 0 6px">ประวัติการบันทึก</div>'+
+    '<div class="mcard" style="padding:8px 11px">'+
+    data.slice().sort(function(a,b){return a.d<b.d?1:-1;}).map(function(e){
+      var dp=new Date(e.d).toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'2-digit'});
+      var ep=e.tg>0?(e.tot/e.tg*100).toFixed(0):0;
+      var ec=ep>=100?'var(--gr2)':ep>=70?'var(--am)':'var(--rd)';
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:.5px solid var(--bd);font-size:12px">'+
+        '<span style="color:var(--tx2)">'+dp+'</span>'+
+        '<span style="font-weight:600">'+fK(e.tot)+'</span>'+
+        '<span style="color:'+ec+';font-weight:700">'+ep+'%</span>'+
+      '</div>';
+    }).join('')+
+    '</div>';
+
+  document.getElementById('modal-body').innerHTML=html;
+  var ov=document.getElementById('modal-overlay');
+  ov.style.display='flex';
+  setTimeout(function(){ov.style.opacity='1';},10);
+}
+
+function closeModal(ev){
+  if(ev&&ev.target!==document.getElementById('modal-overlay')&&ev.type==='click') return;
+  document.getElementById('modal-overlay').style.display='none';
+}
+
+// ── Toast ─────────────────────────────────────────────
+function toast(m){
+  var el=document.getElementById('toast');
+  el.textContent=m;el.classList.add('on');
+  setTimeout(function(){el.classList.remove('on');},2500);
+}
+
+// ── Boot ──────────────────────────────────────────────
+function updateTitle(){
+  var val=document.getElementById('idate').value;
+  var el=document.getElementById('htitle');
+  if(!val){el.textContent='📊 ยอดขายสะสม';return;}
+  var dt=new Date(val);
+  var day=dt.getDate();
+  var mon=dt.toLocaleDateString('th-TH',{month:'short'});
+  el.textContent='📊 ยอดสะสม 1–'+day+' '+mon;
+}
+
+(function(){
+  var now=new Date();
+  document.getElementById('hdate').textContent=now.toLocaleDateString('th-TH',{weekday:'short',year:'numeric',month:'short',day:'numeric'});
+  document.getElementById('idate').value=now.toISOString().split('T')[0];
+  updateTitle();
+  BRANDS.forEach(function(b){
+    var el=document.getElementById('b'+b);
+    if(el) el.value='';
+  });
+  document.getElementById('tprev').textContent='฿ 0';
+  // renderList จะถูกเรียกอัตโนมัติจาก Firestore listener
+  initFirebase();
+})();
+</script>
+
+<!-- Load chart libs AFTER all HTML + inline JS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</body>
+</html>
